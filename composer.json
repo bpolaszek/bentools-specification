@@ -1,0 +1,27 @@
+{
+    "name": "bentools/specification",
+    "type": "library",
+    "license": "MIT",
+    "autoload-dev": {
+        "psr-4": {
+            "BenTools\\Specification\\Tests\\": "tests/src"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "BenTools\\Specification\\": "src"
+        },
+        "files": [
+            "src/Bool.php",
+            "src/Callback.php",
+            "src/Create.php",
+            "src/Not.php"
+        ]
+    },
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "@stable",
+        "squizlabs/php_codesniffer": "@stable",
+        "satooshi/php-coveralls": "@stable"
+    }
+}
