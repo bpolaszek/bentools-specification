@@ -26,11 +26,6 @@ class BooleanSpecification extends AbstractSpecification
     public function __invoke(): bool
     {
         $result = $this->bool;
-
-        if (false === $result) {
-            $this->callErrorCallback();
-        }
-
-        return $result;
+        return $result or $this->callErrorCallback();
     }
 }

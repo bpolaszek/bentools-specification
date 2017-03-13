@@ -39,11 +39,6 @@ class OrSpecification extends AbstractSpecification
         $resultA             = $innerSpecificationA();
         $resultB             = $innerSpecificationB();
         $result              = true === $resultA || true === $resultB;
-
-        if (false === $result) {
-            $this->callErrorCallback();
-        }
-
-        return $result;
+        return $result or $this->callErrorCallback();
     }
 }

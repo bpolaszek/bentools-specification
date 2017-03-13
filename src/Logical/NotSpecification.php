@@ -25,11 +25,6 @@ class NotSpecification extends AbstractSpecification
     {
         $innerSpecification = $this->specification;
         $result             = !$innerSpecification();
-
-        if (false === $result) {
-            $this->callErrorCallback();
-        }
-
-        return $result;
+        return $result or $this->callErrorCallback();
     }
 }

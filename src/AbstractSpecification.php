@@ -57,10 +57,11 @@ abstract class AbstractSpecification implements SpecificationInterface
     /**
      * Calls the callback provided by otherwise()
      */
-    protected function callErrorCallback()
+    protected function callErrorCallback(): bool
     {
         if (null !== ($onError = $this->onError)) {
             $onError();
         }
+        return false;
     }
 }

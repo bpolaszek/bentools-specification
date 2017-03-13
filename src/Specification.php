@@ -33,12 +33,7 @@ final class Specification extends AbstractSpecification
     {
         $specification = $this->specification;
         $result        = $specification();
-
-        if (false === $result) {
-            $this->callErrorCallback();
-        }
-        
-        return $result;
+        return $result or $this->callErrorCallback();
     }
 
     /**
