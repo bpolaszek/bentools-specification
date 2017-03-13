@@ -1,8 +1,11 @@
 <?php
 
-namespace BenTools\Specification;
+namespace BenTools\Specification\Logical;
 
-class AndSpecification extends AbstractSpecification
+use BenTools\Specification\AbstractSpecification;
+use BenTools\Specification\SpecificationInterface;
+
+class OrSpecification extends AbstractSpecification
 {
 
     /**
@@ -34,7 +37,7 @@ class AndSpecification extends AbstractSpecification
         $innerSpecificationA = $this->specificationA;
         $innerSpecificationB = $this->specificationB;
         return true === $innerSpecificationA()
-            && true === $innerSpecificationB();
+            || true === $innerSpecificationB();
     }
 
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace BenTools\Specification;
+namespace BenTools\Specification\Helper;
+
+use BenTools\Specification\AbstractSpecification;
 
 class BooleanSpecification extends AbstractSpecification
 {

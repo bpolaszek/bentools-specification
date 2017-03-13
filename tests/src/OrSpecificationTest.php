@@ -2,10 +2,10 @@
 
 namespace BenTools\Specification\Tests;
 
-use BenTools\Specification\BooleanSpecification;
+use BenTools\Specification\Helper\BooleanSpecification;
 use PHPUnit\Framework\TestCase;
 
-use BenTools\Specification\OrSpecification;
+use BenTools\Specification\Logical\OrSpecification;
 
 class OrSpecificationTest extends TestCase
 {

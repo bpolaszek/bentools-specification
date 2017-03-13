@@ -1,6 +1,9 @@
 <?php
 
-namespace BenTools\Specification;
+namespace BenTools\Specification\Logical;
+
+use BenTools\Specification\AbstractSpecification;
+use BenTools\Specification\SpecificationInterface;
 
 class NotSpecification extends AbstractSpecification
 {

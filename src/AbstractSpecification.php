@@ -2,6 +2,10 @@
 
 namespace BenTools\Specification;
 
+use BenTools\Specification\Logical\AndSpecification;
+use BenTools\Specification\Logical\NotSpecification;
+use BenTools\Specification\Logical\OrSpecification;
+
 abstract class AbstractSpecification implements SpecificationInterface
 {
 

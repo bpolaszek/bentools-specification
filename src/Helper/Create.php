@@ -1,6 +1,8 @@
 <?php
 
-namespace BenTools\Specification;
+namespace BenTools\Specification\Helper;
+
+use BenTools\Specification\Specification;
 
 if (!function_exists(sprintf('%s\\create', __NAMESPACE__))) {
     function create(...$specifications)

@@ -4,7 +4,7 @@ namespace BenTools\Specification\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use BenTools\Specification\CallbackSpecification;
+use BenTools\Specification\Helper\CallbackSpecification;
 
 class CallbackSpecificationTest extends TestCase
 {
@@ -27,13 +27,13 @@ class CallbackSpecificationTest extends TestCase
 
     public function testFunction()
     {
-        $this->assertTrue(function_exists('BenTools\\Specification\\callback'));
-        $spec = \BenTools\Specification\callback(function () {
+        $this->assertTrue(function_exists('BenTools\\Specification\\Helper\\callback'));
+        $spec = \BenTools\Specification\Helper\callback(function () {
             return true;
         });
         $this->assertInstanceOf(CallbackSpecification::class, $spec);
         $this->assertTrue($spec());
-        $spec = \BenTools\Specification\callback(function () {
+        $spec = \BenTools\Specification\Helper\callback(function () {
             return false;
         });
         $this->assertInstanceOf(CallbackSpecification::class, $spec);

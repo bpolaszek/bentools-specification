@@ -1,6 +1,8 @@
 <?php
 
-namespace BenTools\Specification;
+namespace BenTools\Specification\Helper;
+
+use BenTools\Specification\Helper\CallbackSpecification;
 
 if (!function_exists(sprintf('%s\\callback', __NAMESPACE__))) {
     function callback(callable $callback)

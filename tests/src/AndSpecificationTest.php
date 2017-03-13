@@ -2,10 +2,10 @@
 
 namespace BenTools\Specification\Tests;
 
-use BenTools\Specification\BooleanSpecification;
+use BenTools\Specification\Helper\BooleanSpecification;
 use PHPUnit\Framework\TestCase;
 
-use BenTools\Specification\AndSpecification;
+use BenTools\Specification\Logical\AndSpecification;
 
 class AndSpecificationTest extends TestCase
 {

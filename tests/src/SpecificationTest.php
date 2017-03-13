@@ -2,9 +2,9 @@
 
 namespace BenTools\Specification\Tests;
 
-use BenTools\Specification\BooleanSpecification;
+use BenTools\Specification\Helper\BooleanSpecification;
 use BenTools\Specification\Specification;
-use function BenTools\Specification\create AS spec;
+use function BenTools\Specification\Helper\create AS spec;
 use PHPUnit\Framework\TestCase;
 
 class SpecificationTest extends TestCase
@@ -13,7 +13,7 @@ class SpecificationTest extends TestCase
     public function testInit()
     {
         // By function
-        $this->assertTrue(function_exists('BenTools\\Specification\\create'));
+        $this->assertTrue(function_exists('BenTools\\Specification\\Helper\\create'));
         $spec = spec(new BooleanSpecification(true), new BooleanSpecification(false));
         $this->assertInstanceOf(Specification::class, $spec);
         $this->assertFalse($spec());

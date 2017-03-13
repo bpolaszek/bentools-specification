@@ -12,13 +12,15 @@
             "BenTools\\Specification\\": "src"
         },
         "files": [
-            "src/Bool.php",
-            "src/Callback.php",
-            "src/Create.php",
-            "src/Not.php"
+            "src/Helper/Bool.php",
+            "src/Helper/Callback.php",
+            "src/Helper/Create.php",
+            "src/Helper/Not.php"
         ]
     },
-    "require": {},
+    "require": {
+        "php": ">=7.0"
+    },
     "require-dev": {
         "phpunit/phpunit": "@stable",
         "squizlabs/php_codesniffer": "@stable",

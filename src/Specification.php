@@ -2,6 +2,8 @@
 
 namespace BenTools\Specification;
 
+use BenTools\Specification\Helper\BooleanSpecification;
+
 final class Specification extends AbstractSpecification
 {
 

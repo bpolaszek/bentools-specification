@@ -1,6 +1,6 @@
 <?php
 
-namespace BenTools\Specification;
+namespace BenTools\Specification\Helper;
 
 if (!function_exists(sprintf('%s\\bool', __NAMESPACE__))) {
     function bool(bool $bool)

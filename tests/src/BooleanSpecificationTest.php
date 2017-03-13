@@ -4,7 +4,7 @@ namespace BenTools\Specification\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use BenTools\Specification\BooleanSpecification;
+use BenTools\Specification\Helper\BooleanSpecification;
 
 class BooleanSpecificationTest extends TestCase
 {
@@ -23,11 +23,11 @@ class BooleanSpecificationTest extends TestCase
 
     public function testFunction()
     {
-        $this->assertTrue(function_exists('BenTools\\Specification\\bool'));
-        $spec = \BenTools\Specification\bool(true);
+        $this->assertTrue(function_exists('BenTools\\Specification\\Helper\\bool'));
+        $spec = \BenTools\Specification\Helper\bool(true);
         $this->assertInstanceOf(BooleanSpecification::class, $spec);
         $this->assertTrue($spec());
-        $spec = \BenTools\Specification\bool(false);
+        $spec = \BenTools\Specification\Helper\bool(false);
         $this->assertInstanceOf(BooleanSpecification::class, $spec);
         $this->assertFalse($spec());
     }
