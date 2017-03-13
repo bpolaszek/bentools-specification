@@ -57,10 +57,18 @@ class SpecificationTest extends TestCase
         $this->assertTrue($spec());
     }
 
-    public function testNOTChaining()
+    public function testANDNOTChaining()
     {
         $spec = new BooleanSpecification(true);
         $spec = $spec->andFails(new BooleanSpecification(false));
+
+        $this->assertTrue($spec());
+    }
+
+    public function testORNOTChaining()
+    {
+        $spec = new BooleanSpecification(false);
+        $spec = $spec->orFails(new BooleanSpecification(false));
 
         $this->assertTrue($spec());
     }

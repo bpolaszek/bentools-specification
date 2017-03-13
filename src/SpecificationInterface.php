@@ -26,6 +26,13 @@ interface SpecificationInterface
     public function andFails(SpecificationInterface $specification): SpecificationInterface;
 
     /**
+     * Add a negated-specification that MUST be fulfilled if this one's not, and vice-versa.
+     * @param SpecificationInterface $specification
+     * @return SpecificationInterface - Provides fluent interface
+     */
+    public function orFails(SpecificationInterface $specification): SpecificationInterface;
+
+    /**
      * Specify an optionnal callback that will be called if the condition is not satisfied.
      * @param callable $callback
      * @return $this - Provides fluent interface

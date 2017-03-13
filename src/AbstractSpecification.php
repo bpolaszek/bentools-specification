@@ -40,6 +40,14 @@ abstract class AbstractSpecification implements SpecificationInterface
     /**
      * @inheritDoc
      */
+    public function orFails(SpecificationInterface $specification): SpecificationInterface
+    {
+        return new OrSpecification($this, new NotSpecification($specification));
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function otherwise(callable $callback = null): SpecificationInterface
     {
         $this->onError = $callback;
