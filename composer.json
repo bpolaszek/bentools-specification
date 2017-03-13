@@ -1,6 +1,7 @@
 {
     "name": "bentools/specification",
     "type": "library",
+    "description": "Provides an implementation of the Specification Pattern. PHP7+",
     "license": "MIT",
     "autoload-dev": {
         "psr-4": {
