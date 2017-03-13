@@ -8,11 +8,15 @@ use BenTools\Specification\Logical\OrSpecification;
 
 abstract class AbstractSpecification implements SpecificationInterface
 {
+    /**
+     * @var callable
+     */
+    protected $onError;
 
     /**
      * @inheritdoc
      */
-    public function asWellAs(SpecificationInterface $specification): SpecificationInterface
+    public function andSuits(SpecificationInterface $specification): SpecificationInterface
     {
         return new AndSpecification($this, $specification);
     }
@@ -20,7 +24,7 @@ abstract class AbstractSpecification implements SpecificationInterface
     /**
      * @inheritdoc
      */
-    public function otherwise(SpecificationInterface $specification): SpecificationInterface
+    public function orSuits(SpecificationInterface $specification): SpecificationInterface
     {
         return new OrSpecification($this, $specification);
     }
@@ -28,9 +32,27 @@ abstract class AbstractSpecification implements SpecificationInterface
     /**
      * @inheritdoc
      */
-    public function butNot(SpecificationInterface $specification): SpecificationInterface
+    public function andFails(SpecificationInterface $specification): SpecificationInterface
     {
         return new AndSpecification($this, new NotSpecification($specification));
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function otherwise(callable $callback = null): SpecificationInterface
+    {
+        $this->onError = $callback;
+        return $this;
+    }
+
+    /**
+     * Calls the callback provided by otherwise()
+     */
+    protected function callErrorCallback()
+    {
+        if (null !== ($onError = $this->onError)) {
+            $onError();
+        }
+    }
 }

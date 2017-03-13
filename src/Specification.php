@@ -20,21 +20,25 @@ final class Specification extends AbstractSpecification
     {
         if (0 === count($specifications)) {
             $this->specification = new BooleanSpecification(true);
-        }
-        else {
+        } else {
             $this->specification = array_shift($specifications);
         }
 
         array_walk($specifications, function (SpecificationInterface $specification) {
-            $this->specification = $this->specification->asWellAs($specification);
+            $this->specification = $this->specification->andSuits($specification);
         });
-
     }
 
     public function __invoke(): bool
     {
         $specification = $this->specification;
-        return $specification();
+        $result        = $specification();
+
+        if (false === $result) {
+            $this->callErrorCallback();
+        }
+        
+        return $result;
     }
 
     /**
@@ -45,5 +49,4 @@ final class Specification extends AbstractSpecification
     {
         return new self(...$specifications);
     }
-
 }

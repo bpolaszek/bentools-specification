@@ -36,8 +36,14 @@ class AndSpecification extends AbstractSpecification
     {
         $innerSpecificationA = $this->specificationA;
         $innerSpecificationB = $this->specificationB;
-        return true === $innerSpecificationA()
-            && true === $innerSpecificationB();
-    }
+        $resultA             = $innerSpecificationA();
+        $resultB             = $innerSpecificationB();
+        $result              = true === $resultA && true === $resultB;
 
+        if (false === $result) {
+            $this->callErrorCallback();
+        }
+
+        return $result;
+    }
 }

@@ -24,6 +24,12 @@ class NotSpecification extends AbstractSpecification
     public function __invoke(): bool
     {
         $innerSpecification = $this->specification;
-        return !$innerSpecification();
+        $result             = !$innerSpecification();
+
+        if (false === $result) {
+            $this->callErrorCallback();
+        }
+
+        return $result;
     }
 }

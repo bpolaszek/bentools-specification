@@ -33,13 +33,13 @@ class SpecificationTest extends TestCase
     {
         $spec = new BooleanSpecification(true);
 
-        $spec = $spec->asWellAs(new BooleanSpecification(true));
+        $spec = $spec->andSuits(new BooleanSpecification(true));
         $this->assertTrue($spec());
 
-        $spec = $spec->asWellAs(new BooleanSpecification(false));
+        $spec = $spec->andSuits(new BooleanSpecification(false));
         $this->assertFalse($spec());
 
-        $spec = $spec->asWellAs(new BooleanSpecification(true));
+        $spec = $spec->andSuits(new BooleanSpecification(true));
         $this->assertFalse($spec());
     }
 
@@ -47,20 +47,20 @@ class SpecificationTest extends TestCase
     {
         $spec = new BooleanSpecification(true);
 
-        $spec = $spec->otherwise(new BooleanSpecification(false));
+        $spec = $spec->orSuits(new BooleanSpecification(false));
         $this->assertTrue($spec());
 
-        $spec = $spec->otherwise(new BooleanSpecification(false));
+        $spec = $spec->orSuits(new BooleanSpecification(false));
         $this->assertTrue($spec());
 
-        $spec = $spec->otherwise(new BooleanSpecification(true));
+        $spec = $spec->orSuits(new BooleanSpecification(true));
         $this->assertTrue($spec());
     }
 
     public function testNOTChaining()
     {
         $spec = new BooleanSpecification(true);
-        $spec = $spec->butNot(new BooleanSpecification(false));
+        $spec = $spec->andFails(new BooleanSpecification(false));
 
         $this->assertTrue($spec());
     }

@@ -30,7 +30,9 @@ class CallbackSpecification extends AbstractSpecification
         if (!is_bool($result)) {
             throw new \RuntimeException("The result of a callback should be of boolean type.");
         }
+        if (false === $result) {
+            $this->callErrorCallback();
+        }
         return $result;
     }
-
 }
