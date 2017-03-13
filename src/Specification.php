@@ -2,46 +2,66 @@
 
 namespace BenTools\Specification;
 
-use BenTools\Specification\Helper\BooleanSpecification;
+use BenTools\Specification\Logical\AndSpecification;
+use BenTools\Specification\Logical\NotSpecification;
+use BenTools\Specification\Logical\OrSpecification;
 
-final class Specification extends AbstractSpecification
+abstract class Specification implements SpecificationInterface
 {
+    /**
+     * @var callable
+     */
+    protected $onError;
 
     /**
-     * @var SpecificationInterface
+     * @inheritdoc
      */
-    private $specification;
-
-    /**
-     * Specification constructor.
-     * @param SpecificationInterface[] $specifications
-     */
-    public function __construct(SpecificationInterface ...$specifications)
+    public function andSuits(SpecificationInterface $specification): SpecificationInterface
     {
-        if (0 === count($specifications)) {
-            $this->specification = new BooleanSpecification(true);
-        } else {
-            $this->specification = array_shift($specifications);
+        return new AndSpecification($this, $specification);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function orSuits(SpecificationInterface $specification): SpecificationInterface
+    {
+        return new OrSpecification($this, $specification);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function andFails(SpecificationInterface $specification): SpecificationInterface
+    {
+        return new AndSpecification($this, new NotSpecification($specification));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function orFails(SpecificationInterface $specification): SpecificationInterface
+    {
+        return new OrSpecification($this, new NotSpecification($specification));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function otherwise(callable $callback = null): SpecificationInterface
+    {
+        $this->onError = $callback;
+        return $this;
+    }
+
+    /**
+     * Calls the callback provided by otherwise()
+     */
+    protected function callErrorCallback(): bool
+    {
+        if (null !== ($onError = $this->onError)) {
+            $onError();
         }
-
-        array_walk($specifications, function (SpecificationInterface $specification) {
-            $this->specification = $this->specification->andSuits($specification);
-        });
-    }
-
-    public function __invoke(): bool
-    {
-        $specification = $this->specification;
-        $result        = $specification();
-        return $result or $this->callErrorCallback();
-    }
-
-    /**
-     * @param array ...$specifications
-     * @return Specification
-     */
-    final public static function create(...$specifications)
-    {
-        return new self(...$specifications);
+        return false;
     }
 }

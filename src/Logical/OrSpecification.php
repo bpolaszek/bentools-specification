@@ -2,10 +2,10 @@
 
 namespace BenTools\Specification\Logical;
 
-use BenTools\Specification\AbstractSpecification;
+use BenTools\Specification\Specification;
 use BenTools\Specification\SpecificationInterface;
 
-class OrSpecification extends AbstractSpecification
+class OrSpecification extends Specification
 {
 
     /**

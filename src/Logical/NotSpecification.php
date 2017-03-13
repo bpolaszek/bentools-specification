@@ -2,10 +2,10 @@
 
 namespace BenTools\Specification\Logical;
 
-use BenTools\Specification\AbstractSpecification;
+use BenTools\Specification\Specification;
 use BenTools\Specification\SpecificationInterface;
 
-class NotSpecification extends AbstractSpecification
+class NotSpecification extends Specification
 {
     /**
      * @var SpecificationInterface

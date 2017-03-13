@@ -3,11 +3,11 @@
 namespace BenTools\Specification\Tests;
 
 use BenTools\Specification\Helper\BooleanSpecification;
-use BenTools\Specification\Specification;
+use BenTools\Specification\CompositeSpecification;
 use function BenTools\Specification\Helper\create AS spec;
 use PHPUnit\Framework\TestCase;
 
-class SpecificationTest extends TestCase
+class CompositeSpecificationTest extends TestCase
 {
 
     public function testInit()
@@ -15,17 +15,17 @@ class SpecificationTest extends TestCase
         // By function
         $this->assertTrue(function_exists('BenTools\\Specification\\Helper\\create'));
         $spec = spec(new BooleanSpecification(true), new BooleanSpecification(false));
-        $this->assertInstanceOf(Specification::class, $spec);
+        $this->assertInstanceOf(CompositeSpecification::class, $spec);
         $this->assertFalse($spec());
 
         // By static method
-        $spec = Specification::create(new BooleanSpecification(true), new BooleanSpecification(false));
-        $this->assertInstanceOf(Specification::class, $spec);
+        $spec = CompositeSpecification::create(new BooleanSpecification(true), new BooleanSpecification(false));
+        $this->assertInstanceOf(CompositeSpecification::class, $spec);
         $this->assertFalse($spec());
 
         // By constructor
-        $spec = new Specification(new BooleanSpecification(true), new BooleanSpecification(false));
-        $this->assertInstanceOf(Specification::class, $spec);
+        $spec = new CompositeSpecification(new BooleanSpecification(true), new BooleanSpecification(false));
+        $this->assertInstanceOf(CompositeSpecification::class, $spec);
         $this->assertFalse($spec());
     }
 
@@ -81,12 +81,12 @@ class SpecificationTest extends TestCase
             $wasCalled = true;
         };
 
-        $spec = new Specification(new BooleanSpecification(true), new BooleanSpecification(true));
+        $spec = new CompositeSpecification(new BooleanSpecification(true), new BooleanSpecification(true));
         $spec = $spec->otherwise($otherwise);
         $this->assertTrue($spec());
         $this->assertFalse($wasCalled);
 
-        $spec = new Specification(new BooleanSpecification(true), new BooleanSpecification(false));
+        $spec = new CompositeSpecification(new BooleanSpecification(true), new BooleanSpecification(false));
         $spec = $spec->otherwise($otherwise);
         $this->assertFalse($spec());
         $this->assertTrue($wasCalled);

@@ -2,9 +2,9 @@
 
 namespace BenTools\Specification\Helper;
 
-use BenTools\Specification\AbstractSpecification;
+use BenTools\Specification\Specification;
 
-class BooleanSpecification extends AbstractSpecification
+class BooleanSpecification extends Specification
 {
     /**
      * @var bool

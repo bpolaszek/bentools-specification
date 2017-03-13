@@ -2,11 +2,11 @@
 
 namespace BenTools\Specification\Helper;
 
-use BenTools\Specification\Specification;
+use BenTools\Specification\CompositeSpecification;
 
 if (!function_exists(sprintf('%s\\create', __NAMESPACE__))) {
     function create(...$specifications)
     {
-        return new Specification(...$specifications);
+        return new CompositeSpecification(...$specifications);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace BenTools\Specification\Helper;
 
-use BenTools\Specification\AbstractSpecification;
+use BenTools\Specification\Specification;
 
-class CallbackSpecification extends AbstractSpecification
+class CallbackSpecification extends Specification
 {
     /**
      * @var callable
