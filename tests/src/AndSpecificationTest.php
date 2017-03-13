@@ -30,4 +30,23 @@ class AndSpecificationTest extends TestCase
         $this->assertFalse($spec());
     }
 
+    public function testOtherwiseCallback()
+    {
+        $wasCalled = false;
+        $otherwise = function () use (&$wasCalled) {
+            $wasCalled = true;
+        };
+
+        $spec = new AndSpecification(new BooleanSpecification(true), new BooleanSpecification(true));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertTrue($spec());
+        $this->assertFalse($wasCalled);
+
+        $spec = new AndSpecification(new BooleanSpecification(false), new BooleanSpecification(false));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertFalse($spec());
+        $this->assertTrue($wasCalled);
+
+    }
+
 }

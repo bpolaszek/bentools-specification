@@ -27,4 +27,23 @@ class NotSpecificationTest extends TestCase
         $this->assertInstanceOf(NotSpecification::class, $spec);
     }
 
+    public function testOtherwiseCallback()
+    {
+        $wasCalled = false;
+        $otherwise = function () use (&$wasCalled) {
+            $wasCalled = true;
+        };
+
+        $spec = new NotSpecification(new BooleanSpecification(false));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertTrue($spec());
+        $this->assertFalse($wasCalled);
+
+        $spec = new NotSpecification(new BooleanSpecification(true));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertFalse($spec());
+        $this->assertTrue($wasCalled);
+
+    }
+
 }

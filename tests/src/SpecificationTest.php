@@ -66,5 +66,24 @@ class SpecificationTest extends TestCase
     }
 
 
+    public function testOtherwiseCallback()
+    {
+        $wasCalled = false;
+        $otherwise = function () use (&$wasCalled) {
+            $wasCalled = true;
+        };
+
+        $spec = new Specification(new BooleanSpecification(true), new BooleanSpecification(true));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertTrue($spec());
+        $this->assertFalse($wasCalled);
+
+        $spec = new Specification(new BooleanSpecification(true), new BooleanSpecification(false));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertFalse($spec());
+        $this->assertTrue($wasCalled);
+
+    }
+
 
 }

@@ -30,5 +30,24 @@ class OrSpecificationTest extends TestCase
         $this->assertFalse($spec());
     }
 
+    public function testOtherwiseCallback()
+    {
+        $wasCalled = false;
+        $otherwise = function () use (&$wasCalled) {
+            $wasCalled = true;
+        };
+
+        $spec = new OrSpecification(new BooleanSpecification(true), new BooleanSpecification(true));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertTrue($spec());
+        $this->assertFalse($wasCalled);
+
+        $spec = new OrSpecification(new BooleanSpecification(false), new BooleanSpecification(false));
+        $spec = $spec->otherwise($otherwise);
+        $this->assertFalse($spec());
+        $this->assertTrue($wasCalled);
+
+    }
+
 
 }

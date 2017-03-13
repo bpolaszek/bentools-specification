@@ -51,4 +51,27 @@ class CallbackSpecificationTest extends TestCase
         $spec();
     }
 
+    public function testOtherwiseCallback()
+    {
+        $wasCalled = false;
+        $otherwise = function () use (&$wasCalled) {
+            $wasCalled = true;
+        };
+
+        $spec = new CallbackSpecification(function () {
+            return true;
+        });
+        $spec = $spec->otherwise($otherwise);
+        $this->assertTrue($spec());
+        $this->assertFalse($wasCalled);
+
+        $spec = new CallbackSpecification(function () {
+            return false;
+        });
+        $spec = $spec->otherwise($otherwise);
+        $this->assertFalse($spec());
+        $this->assertTrue($wasCalled);
+
+    }
+
 }
