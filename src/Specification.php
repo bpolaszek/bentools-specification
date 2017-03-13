@@ -12,18 +12,16 @@ class Specification extends AbstractSpecification
 
     /**
      * Specification constructor.
+     * @param SpecificationInterface[] $specifications
      */
-    public function __construct(...$specifications)
+    public function __construct(SpecificationInterface ...$specifications)
     {
         if (0 === count($specifications)) {
-            throw new \RuntimeException("At least 1 sepecification must be injected.");
+            $this->specification = new BooleanSpecification(true);
         }
-
-        $specifications = (function (SpecificationInterface ...$specifications) {
-            return $specifications;
-        })(...$specifications);
-
-        $this->specification = array_shift($specifications);
+        else {
+            $this->specification = array_shift($specifications);
+        }
 
         array_walk($specifications, function (SpecificationInterface $specification) {
             $this->specification = $this->specification->asWellAs($specification);
@@ -35,11 +33,6 @@ class Specification extends AbstractSpecification
     {
         $specification = $this->specification;
         return $specification();
-    }
-
-    public function isValid()
-    {
-        return $this();
     }
 
     /**
