@@ -2,7 +2,7 @@
 
 namespace BenTools\Specification;
 
-class Specification extends AbstractSpecification
+final class Specification extends AbstractSpecification
 {
 
     /**
