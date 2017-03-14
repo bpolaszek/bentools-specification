@@ -29,6 +29,12 @@ class CompositeSpecificationTest extends TestCase
         $this->assertFalse($spec());
     }
 
+    public function testInitWithoutWrapping()
+    {
+        $spec = spec(); // Defaults to new BooleanSpec(true);
+        $this->assertTrue($spec());
+    }
+
     public function testANDChaining()
     {
         $spec = new BooleanSpecification(true);
