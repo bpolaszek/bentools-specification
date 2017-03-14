@@ -35,5 +35,4 @@ final class CompositeSpecification extends Specification
         $result        = $specification();
         return $result or $this->callErrorCallback();
     }
-
 }
