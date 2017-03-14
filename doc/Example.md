@@ -30,7 +30,7 @@ Specification
 
 use BenTools\Specification\Specification;
 
-cclass SpecProductInStock extends Specification
+class SpecProductInStock extends Specification
  {
  
      private $product;
@@ -130,3 +130,9 @@ else {
 Of course this leads to way more code, just to wrap some (sometimes) simple conditions. **Do not do this everywhere!** 
 
 The goal is to wrap every business rule into a logical, independent unit, allowing you to test each one and combine them.
+
+
+Credits
+-------
+
+Thank you [Jean-François Lépine (fr)](http://blog.lepine.pro/php/gerer-des-regles-metiers-complexes-etou-changeantes/).
