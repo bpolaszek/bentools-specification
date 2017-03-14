@@ -13,7 +13,7 @@ interface SpecificationInterface
      * @param  SpecificationInterface $specification
      * @return SpecificationInterface|AndSpecification - Provides fluent interface
      */
-    public function andSuits(SpecificationInterface $specification): SpecificationInterface;
+    public function andSuits(SpecificationInterface $specification);
 
     /**
      * Add a specification that MUST be fulfilled if this one's not, and vice-versa.
@@ -21,7 +21,7 @@ interface SpecificationInterface
      * @param  SpecificationInterface $specification
      * @return SpecificationInterface|OrSpecification - Provides fluent interface
      */
-    public function orSuits(SpecificationInterface $specification): SpecificationInterface;
+    public function orSuits(SpecificationInterface $specification);
 
     /**
      * Add a negated-specification that MUST be fulfilled along with this one.
@@ -29,7 +29,7 @@ interface SpecificationInterface
      * @param  SpecificationInterface $specification
      * @return SpecificationInterface|AndSpecification - Provides fluent interface
      */
-    public function andFails(SpecificationInterface $specification): SpecificationInterface;
+    public function andFails(SpecificationInterface $specification);
 
     /**
      * Add a negated-specification that MUST be fulfilled if this one's not, and vice-versa.
@@ -37,7 +37,7 @@ interface SpecificationInterface
      * @param  SpecificationInterface $specification
      * @return SpecificationInterface|OrSpecification - Provides fluent interface
      */
-    public function orFails(SpecificationInterface $specification): SpecificationInterface;
+    public function orFails(SpecificationInterface $specification);
 
     /**
      * Specify an optionnal callback that should be called if the condition is not satisfied.
@@ -45,7 +45,7 @@ interface SpecificationInterface
      * @param  callable $callback
      * @return $this - Provides fluent interface
      */
-    public function otherwise(callable $callback = null): SpecificationInterface;
+    public function otherwise(callable $callback = null);
 
     /**
      * Calls the callback provided by otherwise()
@@ -57,5 +57,5 @@ interface SpecificationInterface
      *
      * @return bool
      */
-    public function __invoke(): bool;
+    public function __invoke();
 }

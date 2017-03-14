@@ -57,7 +57,7 @@ class OrSpecification extends Specification
     /**
      * @inheritDoc
      */
-    public function __invoke(): bool
+    public function __invoke()
     {
         $leftSpecification = $this->leftSpecification;
         $rightSpecification = $this->rightSpecification;

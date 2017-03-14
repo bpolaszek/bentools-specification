@@ -16,7 +16,7 @@ class BooleanSpecification extends Specification
      *
      * @param bool $bool
      */
-    public function __construct(bool $bool)
+    public function __construct($bool)
     {
         $this->bool = $bool;
     }
@@ -24,7 +24,7 @@ class BooleanSpecification extends Specification
     /**
      * @inheritdoc
      */
-    public function __invoke(): bool
+    public function __invoke()
     {
         return $this->bool;
     }
