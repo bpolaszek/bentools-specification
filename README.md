@@ -25,11 +25,65 @@ The principles of the Specification Pattern are borrowed from Domain Driven Desi
 
 Overview
 --------
-Every `Specification` object implements the [`__invoke()`](http://php.net/manual/en/language.oop5.magic.php#object.invoke) method that must return a boolean.
+Every `Specification` object implements the [`__invoke()`](http://php.net/manual/en/language.oop5.magic.php#object.invoke) method that **MUST** return a boolean, and can be chained with other specifications.
+
+Here's the contract:
+
+```php
+# src/SpecificationInterface.php
+
+namespace BenTools\Specification;
+
+interface SpecificationInterface
+{
+    /**
+     * Add a specification that MUST be fulfilled along with this one.
+     * @param SpecificationInterface $specification
+     * @return SpecificationInterface - Provides fluent interface
+     */
+    public function andSuits(SpecificationInterface $specification): SpecificationInterface;
+
+    /**
+     * Add a specification that MUST be fulfilled if this one's not, and vice-versa.
+     * @param SpecificationInterface $specification
+     * @return SpecificationInterface - Provides fluent interface
+     */
+    public function orSuits(SpecificationInterface $specification): SpecificationInterface;
+
+    /**
+     * Add a negated-specification that MUST be fulfilled along with this one.
+     * @param SpecificationInterface $specification
+     * @return SpecificationInterface - Provides fluent interface
+     */
+    public function andFails(SpecificationInterface $specification): SpecificationInterface;
+
+    /**
+     * Add a negated-specification that MUST be fulfilled if this one's not, and vice-versa.
+     * @param SpecificationInterface $specification
+     * @return SpecificationInterface - Provides fluent interface
+     */
+    public function orFails(SpecificationInterface $specification): SpecificationInterface;
+
+    /**
+     * Specify an optionnal callback that will be called if the condition is not satisfied.
+     * @param callable $callback
+     * @return $this - Provides fluent interface
+     */
+    public function otherwise(callable $callback = null): SpecificationInterface;
+
+    /**
+     * The specification MUST return true or false when invoked.
+     * If the result is false, and a callback has been provided through the otherwise() method,
+     * this callback MUST be called by the implementing function.
+     * @return bool
+     */
+    public function __invoke(): bool;
+}
+```
+
 If the boolean is false, a callback can be called (provided earlier in the `otherwise()` method).
 
 ```php
-
 require_once __DIR__ . '/vendor/autoload.php';
 
 use function BenTools\Specification\Helper\bool as booleanSpec;
@@ -46,7 +100,7 @@ $condition2 = callbackSpec(function () {
 });;
 
 $conditions = $condition1->andSuits($condition2);
-var_dump($conditions());
+var_dump($conditions()); // should return true or false, and if false, var_dump() why.
 ```
 
 Advanced Example
