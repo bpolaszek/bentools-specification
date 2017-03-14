@@ -1,8 +1,8 @@
 [![Latest Stable Version](https://poser.pugx.org/bentools/specification/v/stable)](https://packagist.org/packages/bentools/specification)
 [![License](https://poser.pugx.org/bentools/specification/license)](https://packagist.org/packages/bentools/specification)
-[![Build Status](https://img.shields.io/travis/bpolaszek/bentools-specification/master.svg?style=flat-square)](https://travis-ci.org/bpolaszek/bentools-specification)
+[![Build Status](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/badges/build.png?b=master)](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/build-status/master)
 [![Coverage Status](https://coveralls.io/repos/github/bpolaszek/bentools-specification/badge.svg?branch=master)](https://coveralls.io/github/bpolaszek/bentools-specification?branch=master)
-[![Quality Score](https://img.shields.io/scrutinizer/g/bpolaszek/bentools-specification.svg?style=flat-square)](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/?branch=master)
 [![Total Downloads](https://poser.pugx.org/bentools/specification/downloads)](https://packagist.org/packages/bentools/specification)
 
 # bentools/specification
