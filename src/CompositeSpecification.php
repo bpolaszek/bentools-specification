@@ -36,12 +36,4 @@ final class CompositeSpecification extends Specification
         return $result or $this->callErrorCallback();
     }
 
-    /**
-     * @param array ...$specifications
-     * @return CompositeSpecification
-     */
-    final public static function create(...$specifications)
-    {
-        return new self(...$specifications);
-    }
 }

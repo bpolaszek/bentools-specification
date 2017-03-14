@@ -60,8 +60,17 @@ abstract class Specification implements SpecificationInterface
     protected function callErrorCallback(): bool
     {
         if (null !== ($onError = $this->onError)) {
-            $onError();
+            $onError($this);
         }
         return false;
+    }
+
+    /**
+     * @param array ...$args
+     * @return SpecificationInterface
+     */
+    final public static function create(...$args)
+    {
+        return new static(...$args);
     }
 }

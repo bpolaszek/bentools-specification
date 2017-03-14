@@ -25,7 +25,6 @@
     "require-dev": {
         "phpunit/phpunit": "@stable",
         "squizlabs/php_codesniffer": "@stable",
-        "satooshi/php-coveralls": "@stable",
-        "monolog/monolog": "^1.22"
+        "satooshi/php-coveralls": "@stable"
     }
 }
