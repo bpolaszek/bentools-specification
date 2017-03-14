@@ -112,8 +112,16 @@ See our [example](doc/Example.md) to get started.
 Installation
 ------------
 
+PHP 5.6+ (no return types, scalar type hints disabled)
+
 ```
-composer require bentools/specification
+composer require bentools/specification ^1.0
+```
+
+PHP 7.0+
+
+```
+composer require bentools/specification ^2.0
 ```
 
 License
