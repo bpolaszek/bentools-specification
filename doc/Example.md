@@ -43,7 +43,7 @@ cclass SpecProductInStock extends Specification
      /**
       * @inheritDoc
       */
-     public function __invoke(): bool
+     public function __invoke()
      {
          return $this->product->isInStock() or $this->callErrorCallback();
      }
@@ -76,7 +76,7 @@ class SpecCartAcceptsNewProducts extends Specification
         return $this->cart;
     }
 
-    public function __invoke(): bool
+    public function __invoke()
     {
         return count($this->cart) < $this->max or $this->callErrorCallback();
     }
@@ -102,7 +102,7 @@ class SpecHolidayChecker extends Specification
         $this->today = $today;
     }
 
-    public function __invoke(): bool
+    public function __invoke()
     {
         return ($this->today >= new DateTime('First day of July')
             && $this->today < new DateTime('First day of September')) or $this->callErrorCallback();
@@ -116,9 +116,7 @@ $weAreInHolidays = SpecHolidayChecker::create(new DateTime())->otherwise(functio
 ```php
 # Run specifications
 
-use function BenTools\Specification\Helper\create as spec;
-
-$iCanAddProduct = spec($productIsInStock->orSuits($weAreInHolidays))
+$iCanAddProduct = BenTools\Specification\Helper\create($productIsInStock->orSuits($weAreInHolidays))
                     ->andSuits($weCanAddProductsToCart->orSuits($weAreInHolidays));
 
 if ($iCanAddProduct()) {

@@ -23,7 +23,7 @@ class CallbackSpecification extends Specification
     /**
      * @inheritdoc
      */
-    public function __invoke(): bool
+    public function __invoke()
     {
         $callback = $this->callback;
         $result = $callback();

@@ -32,7 +32,7 @@ class OrSpecification extends Specification
     /**
      * @inheritDoc
      */
-    public function __invoke(): bool
+    public function __invoke()
     {
         $innerSpecificationA = $this->specificationA;
         $innerSpecificationB = $this->specificationB;

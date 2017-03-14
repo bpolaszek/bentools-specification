@@ -7,7 +7,7 @@
 
 # bentools/specification
 
-PHP7.0+ implementation of the Specification Pattern.
+PHP implementation of the Specification Pattern.
 
 The goal
 --------
@@ -41,35 +41,35 @@ interface SpecificationInterface
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function andSuits(SpecificationInterface $specification): SpecificationInterface;
+    public function andSuits(SpecificationInterface $specification);
 
     /**
      * Add a specification that MUST be fulfilled if this one's not, and vice-versa.
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function orSuits(SpecificationInterface $specification): SpecificationInterface;
+    public function orSuits(SpecificationInterface $specification);
 
     /**
      * Add a negated-specification that MUST be fulfilled along with this one.
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function andFails(SpecificationInterface $specification): SpecificationInterface;
+    public function andFails(SpecificationInterface $specification);
 
     /**
      * Add a negated-specification that MUST be fulfilled if this one's not, and vice-versa.
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function orFails(SpecificationInterface $specification): SpecificationInterface;
+    public function orFails(SpecificationInterface $specification);
 
     /**
      * Specify an optionnal callback that will be called if the condition is not satisfied.
      * @param callable $callback
      * @return $this - Provides fluent interface
      */
-    public function otherwise(callable $callback = null): SpecificationInterface;
+    public function otherwise(callable $callback = null);
 
     /**
      * The specification MUST return true or false when invoked.
@@ -77,7 +77,7 @@ interface SpecificationInterface
      * this callback MUST be called by the implementing function.
      * @return bool
      */
-    public function __invoke(): bool;
+    public function __invoke();
 }
 ```
 
@@ -86,14 +86,11 @@ If the boolean is false, a callback can be called (provided earlier in the `othe
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
-use function BenTools\Specification\Helper\bool as booleanSpec;
-use function BenTools\Specification\Helper\callback as callbackSpec;
-
-$condition1 = booleanSpec((bool) random_int(0, 1))->otherwise(function () {
+$condition1 = BenTools\Specification\Helper\bool((bool) random_int(0, 1))->otherwise(function () {
     var_dump('Condition 1 failed.');
 });
 
-$condition2 = callbackSpec(function () {
+$condition2 = BenTools\Specification\Helper\callback(function () {
     return (bool) random_int(0, 1);
 })->otherwise(function () {
     var_dump('Condition 2 failed.');
@@ -112,8 +109,16 @@ See our [example](doc/Example.md) to get started.
 Installation
 ------------
 
+PHP 5.6+ (no return types, scalar type hints disabled)
+
 ```
-composer require bentools/specification
+composer require bentools/specification ^1.0
+```
+
+PHP 7.0+ (no return types, scalar type hints disabled)
+
+```
+composer require bentools/specification ^2.0
 ```
 
 License

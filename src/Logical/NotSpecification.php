@@ -21,7 +21,7 @@ class NotSpecification extends Specification
         $this->specification = $specification;
     }
 
-    public function __invoke(): bool
+    public function __invoke()
     {
         $innerSpecification = $this->specification;
         $result             = !$innerSpecification();

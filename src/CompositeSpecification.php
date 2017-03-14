@@ -29,7 +29,7 @@ final class CompositeSpecification extends Specification
         });
     }
 
-    public function __invoke(): bool
+    public function __invoke()
     {
         $specification = $this->specification;
         $result        = $specification();
