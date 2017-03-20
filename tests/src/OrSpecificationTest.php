@@ -88,18 +88,15 @@ class OrSpecificationTest extends TestCase
             $callbackStorage['composite'] = true;
         });
 
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback();
-        }
-        $this->assertFalse($result);
+        $spec(); // false
+        $spec->callErrorCallback();
         $this->assertTrue($callbackStorage['composite']);
         $this->assertFalse($callbackStorage['left']);
         $this->assertFalse($callbackStorage['right']);
 
         // Test cascading
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback(true);
-        }
+        $spec(); // false
+        $spec->callErrorCallback(true);
         $this->assertTrue($callbackStorage['composite']);
         $this->assertTrue($callbackStorage['left']);
         $this->assertFalse($callbackStorage['right']); // The left condition failed, thus the right one is not resolved.
@@ -130,21 +127,17 @@ class OrSpecificationTest extends TestCase
             $callbackStorage['composite'] = true;
         });
 
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback();
-        }
-        $this->assertTrue($result); // Because the left condition resolves to true
-        $this->assertFalse($callbackStorage['composite']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['left']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['right']); // Because the whole condition resolves to true
+        $spec(); // true
+        $this->assertFalse($callbackStorage['composite']);
+        $this->assertFalse($callbackStorage['left']);
+        $this->assertFalse($callbackStorage['right']);
 
         // Test cascading
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback(true);
-        }
-        $this->assertFalse($callbackStorage['composite']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['left']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['right']); // Because the whole condition resolves to true
+        $spec(); // true
+        $spec->callErrorCallback(true);
+        $this->assertTrue($callbackStorage['composite']);
+        $this->assertFalse($callbackStorage['left']);
+        $this->assertFalse($callbackStorage['right']);
     }
 
 
@@ -172,21 +165,18 @@ class OrSpecificationTest extends TestCase
             $callbackStorage['composite'] = true;
         });
 
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback();
-        }
-        $this->assertTrue($result); // Because the left condition resolves to true
-        $this->assertFalse($callbackStorage['composite']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['left']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['right']); // Because the whole condition resolves to true
+        $spec(); // true
+        $spec->callErrorCallback();
+        $this->assertTrue($callbackStorage['composite']);
+        $this->assertFalse($callbackStorage['left']);
+        $this->assertFalse($callbackStorage['right']);
 
         // Test cascading
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback(true);
-        }
-        $this->assertFalse($callbackStorage['composite']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['left']); // Because the whole condition resolves to true
-        $this->assertFalse($callbackStorage['right']); // Because the whole condition resolves to true
+        $spec(); // true
+        $spec->callErrorCallback(true);
+        $this->assertTrue($callbackStorage['composite']);
+        $this->assertFalse($callbackStorage['left']);
+        $this->assertFalse($callbackStorage['right']);
     }
 
 

@@ -139,18 +139,15 @@ class AndSpecificationTest extends TestCase
             $callbackStorage['composite'] = true;
         });
 
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback();
-        }
-        $this->assertFalse($result);
+        $spec(); // false
+        $spec->callErrorCallback();
         $this->assertTrue($callbackStorage['composite']);
         $this->assertFalse($callbackStorage['left']);
         $this->assertFalse($callbackStorage['right']);
 
         // Test cascading
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback(true);
-        }
+        $spec(); // false
+        $spec->callErrorCallback(true);
         $this->assertTrue($callbackStorage['composite']);
         $this->assertTrue($callbackStorage['left']);
         $this->assertFalse($callbackStorage['right']);
@@ -181,18 +178,14 @@ class AndSpecificationTest extends TestCase
             $callbackStorage['composite'] = true;
         });
 
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback();
-        }
-        $this->assertFalse($result);
+        $spec(); // false
+        $spec->callErrorCallback();
         $this->assertTrue($callbackStorage['composite']);
         $this->assertFalse($callbackStorage['left']);
         $this->assertFalse($callbackStorage['right']);
 
-        // Test cascading
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback(true);
-        }
+        $spec(); // false
+        $spec->callErrorCallback(true);
         $this->assertTrue($callbackStorage['composite']);
         $this->assertFalse($callbackStorage['left']); // The left condition succeeded, its callback should not be called
         $this->assertTrue($callbackStorage['right']);
