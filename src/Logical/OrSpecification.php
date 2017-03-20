@@ -71,6 +71,7 @@ class OrSpecification extends Specification
                 $this->unmetSpecification = self::RIGHT_SPEC;
             }
         } else {
+            $this->unmetSpecification = null;
             return true;
         }
         return false;
