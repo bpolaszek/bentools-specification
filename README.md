@@ -126,13 +126,13 @@ Installation
 PHP 5.6+ (no return types, scalar type hints disabled)
 
 ```
-composer require bentools/specification ^1.0
+composer require bentools/specification ^1.1
 ```
 
 PHP 7.0+
 
 ```
-composer require bentools/specification ^2.0
+composer require bentools/specification ^2.1
 ```
 
 License
