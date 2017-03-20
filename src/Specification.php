@@ -57,7 +57,7 @@ abstract class Specification implements SpecificationInterface
     /**
      * @inheritDoc
      */
-    public function callErrorCallback(): void
+    public function callErrorCallback()
     {
         if (null !== ($onError = $this->onError)) {
             $onError($this);

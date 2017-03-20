@@ -50,7 +50,7 @@ interface SpecificationInterface
     /**
      * Calls the callback provided by otherwise()
      */
-    public function callErrorCallback(): void;
+    public function callErrorCallback();
 
     /**
      * The specification MUST return true or false when invoked.
