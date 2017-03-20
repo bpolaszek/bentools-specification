@@ -94,7 +94,10 @@ class CompositeSpecificationTest extends TestCase
 
         $spec = new CompositeSpecification(new BooleanSpecification(true), new BooleanSpecification(false));
         $spec = $spec->otherwise($otherwise);
-        $this->assertFalse($spec());
+        if (false === ($result = $spec())) {
+            $spec->callErrorCallback();
+        }
+        $this->assertFalse($result);
         $this->assertTrue($wasCalled);
 
     }

@@ -13,6 +13,7 @@ class CallbackSpecification extends Specification
 
     /**
      * CallbackSpecification constructor.
+     *
      * @param callable $callback
      */
     public function __construct(callable $callback)
@@ -30,6 +31,6 @@ class CallbackSpecification extends Specification
         if (!is_bool($result)) {
             throw new \RuntimeException("The result of a callback should be of boolean type.");
         }
-        return $result or $this->callErrorCallback();
+        return $result;
     }
 }

@@ -72,6 +72,11 @@ interface SpecificationInterface
     public function otherwise(callable $callback = null): SpecificationInterface;
 
     /**
+     * Calls the callback provided by otherwise()
+     */
+    public function callErrorCallback(): void;
+
+    /**
      * The specification MUST return true or false when invoked.
      * If the result is false, and a callback has been provided through the otherwise() method,
      * this callback MUST be called by the implementing function.
@@ -81,7 +86,7 @@ interface SpecificationInterface
 }
 ```
 
-If the boolean is false, a callback can be called (provided earlier in the `otherwise()` method).
+If the returned boolean is false, you may call `callErrorCallback()`
 
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
@@ -100,7 +105,13 @@ $condition2 = callbackSpec(function () {
 });;
 
 $conditions = $condition1->andSuits($condition2);
-var_dump($conditions()); // should return true or false, and if false, var_dump() why.
+
+if (false === $conditions()) {
+    $conditions->callErrorCallback(true); // Outputs which one failed
+}
+else {
+    // Success!
+}
 ```
 
 Advanced Example

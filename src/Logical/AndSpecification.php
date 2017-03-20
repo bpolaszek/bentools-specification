@@ -8,25 +8,50 @@ use BenTools\Specification\SpecificationInterface;
 class AndSpecification extends Specification
 {
 
-    /**
-     * @var SpecificationInterface
-     */
-    private $specificationA;
+    const LEFT_SPEC = 'left';
+    const RIGHT_SPEC = 'right';
 
     /**
      * @var SpecificationInterface
      */
-    private $specificationB;
+    private $leftSpecification;
+
+    /**
+     * @var SpecificationInterface
+     */
+    private $rightSpecification;
+
+    /**
+     * @var string
+     */
+    private $unmetSpecification;
 
     /**
      * AndSpecification constructor.
-     * @param SpecificationInterface $specificationA
-     * @param SpecificationInterface $specificationB
+     *
+     * @param SpecificationInterface $leftSpecification
+     * @param SpecificationInterface $rightSpecification
      */
-    public function __construct(SpecificationInterface $specificationA, SpecificationInterface $specificationB)
+    public function __construct(SpecificationInterface $leftSpecification, SpecificationInterface $rightSpecification)
     {
-        $this->specificationA = $specificationA;
-        $this->specificationB = $specificationB;
+        $this->leftSpecification  = $leftSpecification;
+        $this->rightSpecification = $rightSpecification;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function callErrorCallback($cascade = false): void
+    {
+        parent::callErrorCallback();
+
+        if (true === $cascade) {
+            if (self::LEFT_SPEC === $this->unmetSpecification) {
+                $this->leftSpecification->callErrorCallback($cascade);
+            } elseif (self::RIGHT_SPEC === $this->unmetSpecification) {
+                $this->rightSpecification->callErrorCallback($cascade);
+            }
+        }
     }
 
     /**
@@ -34,11 +59,16 @@ class AndSpecification extends Specification
      */
     public function __invoke(): bool
     {
-        $innerSpecificationA = $this->specificationA;
-        $innerSpecificationB = $this->specificationB;
-        $resultA             = $innerSpecificationA();
-        $resultB             = $innerSpecificationB();
-        $result              = true === $resultA && true === $resultB;
-        return $result or $this->callErrorCallback();
+        $leftSpecification  = $this->leftSpecification;
+        $rightSpecification = $this->rightSpecification;
+        if (true !== $leftSpecification()) {
+            $this->unmetSpecification = self::LEFT_SPEC;
+            return false;
+        }
+        if (true !== $rightSpecification()) {
+            $this->unmetSpecification = self::RIGHT_SPEC;
+            return false;
+        }
+        return true;
     }
 }

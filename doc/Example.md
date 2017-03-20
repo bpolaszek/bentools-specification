@@ -8,6 +8,13 @@
 
 Let's assume we have a `Cart` object for which we want to add a `Product`, and we have a `Logger` service to record the process when it fails.
 
+The challenge
+-------------
+
+All these combined conditions can lead to unreadable code, and if one of these conditions fails, it may be hard to isolate it.
+
+We'll try to add **a product that is not in stock**, into an **empty cart**, **out of holidays**. 
+
 Lasagna code
 ------------
 ```php
@@ -31,27 +38,32 @@ Specification
 use BenTools\Specification\Specification;
 
 class SpecProductInStock extends Specification
- {
- 
-     private $product;
- 
-     public function __construct(Product $product)
-     {
-         $this->product = $product;
-     }
- 
-     /**
-      * @inheritDoc
-      */
-     public function __invoke(): bool
-     {
-         return $this->product->isInStock() or $this->callErrorCallback();
-     }
- }
- 
- $productIsInStock = SpecProductInStock::create($product)->otherwise(function () use ($logger) {
-     $logger->debug('The product is not in stock.');
- });
+{
+
+    private $product;
+
+    public function __construct(Product $product)
+    {
+        $this->product = $product;
+    }
+
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __invoke(): bool
+    {
+        return $this->product->isInStock();
+    }
+}
+
+$productIsInStock = SpecProductInStock::create($product)->otherwise(function (SpecProductInStock $spec) use ($logger) {
+    $logger->debug('The product is not in stock.', ['product' => $spec->getProduct()]);
+});
 ```
 
 ```php
@@ -68,7 +80,7 @@ class SpecCartAcceptsNewProducts extends Specification
     public function __construct(Cart $cart, int $max)
     {
         $this->cart = $cart;
-        $this->max = $max;
+        $this->max  = $max;
     }
 
     public function getCart()
@@ -78,12 +90,12 @@ class SpecCartAcceptsNewProducts extends Specification
 
     public function __invoke(): bool
     {
-        return count($this->cart) < $this->max or $this->callErrorCallback();
+        return count($this->cart) < $this->max;
     }
 
 }
-$weCanAddProductsToCart = SpecCartAcceptsNewProducts::create($cart, 3)->otherwise(function (SpecCartAcceptsNewProducts $specification) use ($logger) {
-    $logger->debug(sprintf('The cart already has %d products', count($specification->getCart())));
+$weCanAddProductsToCart = SpecCartAcceptsNewProducts::create($cart, 3)->otherwise(function (SpecCartAcceptsNewProducts $spec) use ($logger) {
+    $logger->debug(sprintf('The cart already has %d products', count($spec->getCart())), ['cart' => $spec->getCart()]);
 });
 
 ```
@@ -97,7 +109,7 @@ class SpecHolidayChecker extends Specification
 {
     private $today;
 
-    public function __construct(DateTime $today)
+    public function __construct(DateTimeInterface $today)
     {
         $this->today = $today;
     }
@@ -105,7 +117,7 @@ class SpecHolidayChecker extends Specification
     public function __invoke(): bool
     {
         return ($this->today >= new DateTime('First day of July')
-            && $this->today < new DateTime('First day of September')) or $this->callErrorCallback();
+            && $this->today < new DateTime('First day of September'));
     }
 }
 $weAreInHolidays = SpecHolidayChecker::create(new DateTime())->otherwise(function () use ($logger) {
@@ -116,20 +128,32 @@ $weAreInHolidays = SpecHolidayChecker::create(new DateTime())->otherwise(functio
 ```php
 # Run specifications
 
-use function BenTools\Specification\Helper\create as spec;
+$productCanBeBought = $productIsInStock->orSuits($weAreInHolidays)->otherwise(function () use ($logger) {
+    $logger->info('Buying this product is impossible.');
+});
 
-$iCanAddProduct = spec($productIsInStock->orSuits($weAreInHolidays))
-                    ->andSuits($weCanAddProductsToCart->orSuits($weAreInHolidays));
+$cartCanBeFilled    = $weCanAddProductsToCart->orSuits($weAreInHolidays)->otherwise(function () use ($logger) {
+    $logger->info('Filling the cart is impossible.');
+});
 
-if ($iCanAddProduct()) {
+$iCanAddProductToCart = $productCanBeBought->andSuits($cartCanBeFilled)->otherwise(function () use ($logger) {
+    $logger->info('An error occured');
+});
+
+
+if ($iCanAddProductToCart()) {
     $cart->addProduct($product);
 }
 else {
-    // The logger should have debug output
+    $iCanAddProductToCart->callErrorCallback(true); // Passing true allows cascading the otherwise() chain
+    // The logger should have the following output:
+    // [INFO] An error occured
+    // [INFO] Buying this product is impossible.
+    // [DEBUG] The product is not in stock.
 }
 ```
 
-Of course this leads to way more code, just to wrap some (sometimes) simple conditions. **Do not do this everywhere!** 
+Of course this leads to way more code (and this example is voluntarily complex), just to wrap some (sometimes) simple conditions. **Do not do this everywhere!** 
 
 The goal is to wrap every business rule into a logical, independent unit, allowing you to test each one and combine them.
 

@@ -41,7 +41,10 @@ class NotSpecificationTest extends TestCase
 
         $spec = new NotSpecification(new BooleanSpecification(true));
         $spec = $spec->otherwise($otherwise);
-        $this->assertFalse($spec());
+        if (false === ($result = $spec())) {
+            $spec->callErrorCallback();
+        }
+        $this->assertFalse($result);
         $this->assertTrue($wasCalled);
 
     }

@@ -14,6 +14,7 @@ final class CompositeSpecification extends Specification
 
     /**
      * CompositeSpecification constructor.
+     *
      * @param SpecificationInterface[] $specifications
      */
     public function __construct(SpecificationInterface ...$specifications)
@@ -24,15 +25,18 @@ final class CompositeSpecification extends Specification
             $this->specification = array_shift($specifications);
         }
 
-        array_walk($specifications, function (SpecificationInterface $specification) {
-            $this->specification = $this->specification->andSuits($specification);
-        });
+        array_walk(
+            $specifications,
+            function (SpecificationInterface $specification) {
+                $this->specification = $this->specification->andSuits($specification);
+            }
+        );
     }
 
     public function __invoke(): bool
     {
         $specification = $this->specification;
         $result        = $specification();
-        return $result or $this->callErrorCallback();
+        return $result;
     }
 }

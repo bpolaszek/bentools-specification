@@ -14,6 +14,7 @@ class NotSpecification extends Specification
 
     /**
      * NotSpecification constructor.
+     *
      * @param SpecificationInterface $specification
      */
     public function __construct(SpecificationInterface $specification)
@@ -24,7 +25,6 @@ class NotSpecification extends Specification
     public function __invoke(): bool
     {
         $innerSpecification = $this->specification;
-        $result             = !$innerSpecification();
-        return $result or $this->callErrorCallback();
+        return false === $innerSpecification();
     }
 }

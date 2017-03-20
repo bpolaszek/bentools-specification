@@ -55,14 +55,13 @@ abstract class Specification implements SpecificationInterface
     }
 
     /**
-     * Calls the callback provided by otherwise()
+     * @inheritDoc
      */
-    protected function callErrorCallback(): bool
+    public function callErrorCallback(): void
     {
         if (null !== ($onError = $this->onError)) {
             $onError($this);
         }
-        return false;
     }
 
     /**

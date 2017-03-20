@@ -2,9 +2,8 @@
 
 namespace BenTools\Specification\Tests;
 
-use PHPUnit\Framework\TestCase;
-
 use BenTools\Specification\Helper\BooleanSpecification;
+use PHPUnit\Framework\TestCase;
 
 class BooleanSpecificationTest extends TestCase
 {
@@ -46,7 +45,10 @@ class BooleanSpecificationTest extends TestCase
 
         $spec = new BooleanSpecification(false);
         $spec = $spec->otherwise($otherwise);
-        $this->assertFalse($spec());
+        if (false === ($result = $spec())) {
+            $spec->callErrorCallback();
+        }
+        $this->assertFalse($result);
         $this->assertTrue($wasCalled);
 
     }
