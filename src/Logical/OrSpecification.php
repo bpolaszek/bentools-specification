@@ -41,7 +41,7 @@ class OrSpecification extends Specification
     /**
      * @inheritDoc
      */
-    public function callErrorCallback($cascade = false): void
+    public function callErrorCallback($cascade = false)
     {
         parent::callErrorCallback();
 

@@ -16,7 +16,7 @@ abstract class Specification implements SpecificationInterface
     /**
      * @inheritdoc
      */
-    public function andSuits(SpecificationInterface $specification): SpecificationInterface
+    public function andSuits(SpecificationInterface $specification)
     {
         return new AndSpecification($this, $specification);
     }
@@ -24,7 +24,7 @@ abstract class Specification implements SpecificationInterface
     /**
      * @inheritdoc
      */
-    public function orSuits(SpecificationInterface $specification): SpecificationInterface
+    public function orSuits(SpecificationInterface $specification)
     {
         return new OrSpecification($this, $specification);
     }
@@ -32,7 +32,7 @@ abstract class Specification implements SpecificationInterface
     /**
      * @inheritdoc
      */
-    public function andFails(SpecificationInterface $specification): SpecificationInterface
+    public function andFails(SpecificationInterface $specification)
     {
         return new AndSpecification($this, new NotSpecification($specification));
     }
@@ -40,7 +40,7 @@ abstract class Specification implements SpecificationInterface
     /**
      * @inheritDoc
      */
-    public function orFails(SpecificationInterface $specification): SpecificationInterface
+    public function orFails(SpecificationInterface $specification)
     {
         return new OrSpecification($this, new NotSpecification($specification));
     }
@@ -48,7 +48,7 @@ abstract class Specification implements SpecificationInterface
     /**
      * @inheritDoc
      */
-    public function otherwise(callable $callback = null): SpecificationInterface
+    public function otherwise(callable $callback = null)
     {
         $this->onError = $callback;
         return $this;
@@ -57,7 +57,7 @@ abstract class Specification implements SpecificationInterface
     /**
      * @inheritDoc
      */
-    public function callErrorCallback(): void
+    public function callErrorCallback()
     {
         if (null !== ($onError = $this->onError)) {
             $onError($this);

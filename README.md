@@ -41,40 +41,40 @@ interface SpecificationInterface
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function andSuits(SpecificationInterface $specification): SpecificationInterface;
+    public function andSuits(SpecificationInterface $specification);
 
     /**
      * Add a specification that MUST be fulfilled if this one's not, and vice-versa.
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function orSuits(SpecificationInterface $specification): SpecificationInterface;
+    public function orSuits(SpecificationInterface $specification);
 
     /**
      * Add a negated-specification that MUST be fulfilled along with this one.
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function andFails(SpecificationInterface $specification): SpecificationInterface;
+    public function andFails(SpecificationInterface $specification);
 
     /**
      * Add a negated-specification that MUST be fulfilled if this one's not, and vice-versa.
      * @param SpecificationInterface $specification
      * @return SpecificationInterface - Provides fluent interface
      */
-    public function orFails(SpecificationInterface $specification): SpecificationInterface;
+    public function orFails(SpecificationInterface $specification);
 
     /**
      * Specify an optionnal callback that will be called if the condition is not satisfied.
      * @param callable $callback
      * @return $this - Provides fluent interface
      */
-    public function otherwise(callable $callback = null): SpecificationInterface;
+    public function otherwise(callable $callback = null);
 
     /**
      * Calls the callback provided by otherwise()
      */
-    public function callErrorCallback(): void;
+    public function callErrorCallback();
 
     /**
      * The specification MUST return true or false when invoked.
@@ -82,7 +82,7 @@ interface SpecificationInterface
      * this callback MUST be called by the implementing function.
      * @return bool
      */
-    public function __invoke(): bool;
+    public function __invoke();
 }
 ```
 
@@ -126,13 +126,13 @@ Installation
 PHP 5.6+ (no return types, scalar type hints disabled)
 
 ```
-composer require bentools/specification ^1.0
+composer require bentools/specification ^1.1
 ```
 
 PHP 7.0+
 
 ```
-composer require bentools/specification ^2.0
+composer require bentools/specification ^2.1
 ```
 
 License

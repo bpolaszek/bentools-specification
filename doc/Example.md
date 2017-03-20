@@ -55,7 +55,7 @@ class SpecProductInStock extends Specification
     /**
      * @inheritDoc
      */
-    public function __invoke(): bool
+    public function __invoke()
     {
         return $this->product->isInStock();
     }
@@ -88,7 +88,7 @@ class SpecCartAcceptsNewProducts extends Specification
         return $this->cart;
     }
 
-    public function __invoke(): bool
+    public function __invoke()
     {
         return count($this->cart) < $this->max;
     }
@@ -114,7 +114,7 @@ class SpecHolidayChecker extends Specification
         $this->today = $today;
     }
 
-    public function __invoke(): bool
+    public function __invoke()
     {
         return ($this->today >= new DateTime('First day of July')
             && $this->today < new DateTime('First day of September'));
