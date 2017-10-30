@@ -2,74 +2,81 @@
 
 namespace BenTools\Specification;
 
+use BenTools\Specification\Exception\UnmetSpecificationException;
+use BenTools\Specification\Helper\BooleanSpecification;
+use BenTools\Specification\Helper\CallbackSpecification;
 use BenTools\Specification\Logical\AndSpecification;
 use BenTools\Specification\Logical\NotSpecification;
 use BenTools\Specification\Logical\OrSpecification;
 
-abstract class Specification implements SpecificationInterface
+abstract class Specification
 {
-    /**
-     * @var callable
-     */
-    protected $onError;
 
     /**
-     * @inheritdoc
+     * @var string
      */
-    public function andSuits(SpecificationInterface $specification): SpecificationInterface
+    protected $name;
+
+    /**
+     * @return string
+     */
+    public function getName(): ?string
     {
-        return new AndSpecification($this, $specification);
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function withName(?string $name): Specification
+    {
+        $clone = clone $this;
+        $clone->name = $name;
+        return $clone;
     }
 
     /**
      * @inheritdoc
      */
-    public function orSuits(SpecificationInterface $specification): SpecificationInterface
+    public function and(Specification $specification, ?string $name = null): Specification
     {
-        return new OrSpecification($this, $specification);
+        return new AndSpecification($this, $specification, $name);
     }
 
     /**
      * @inheritdoc
      */
-    public function andFails(SpecificationInterface $specification): SpecificationInterface
+    public function or(Specification $specification, ?string $name = null): Specification
     {
-        return new AndSpecification($this, new NotSpecification($specification));
+        return new OrSpecification($this, $specification, $name);
     }
 
     /**
-     * @inheritDoc
+     * @return Specification
      */
-    public function orFails(SpecificationInterface $specification): SpecificationInterface
+    public function negate(?string $name = null): Specification
     {
-        return new OrSpecification($this, new NotSpecification($specification));
+        return new NotSpecification($this, $name);
     }
 
     /**
-     * @inheritDoc
+     * @throws UnmetSpecificationException
      */
-    public function otherwise(callable $callback = null): SpecificationInterface
-    {
-        $this->onError = $callback;
-        return $this;
-    }
+    abstract public function __invoke(): void;
 
     /**
-     * @inheritDoc
+     * @param mixed $spec
+     * @return Specification
      */
-    public function callErrorCallback()
+    final public static function factory($specification, ?string $name): Specification
     {
-        if (null !== ($onError = $this->onError)) {
-            $onError($this);
+        if ($specification instanceof Specification) {
+            return $name !== $specification->getName() ? $specification->withName($name) : $specification;
+        } elseif (is_callable($specification)) {
+            return new CallbackSpecification($specification, $name);
+        } elseif (is_bool($specification)) {
+            return new BooleanSpecification($specification, $name);
         }
-    }
-
-    /**
-     * @param array ...$args
-     * @return SpecificationInterface
-     */
-    final public static function create(...$args)
-    {
-        return new static(...$args);
+        throw new \RuntimeException("Unable to determine specificaton type.");
     }
 }

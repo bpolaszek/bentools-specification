@@ -6,17 +6,17 @@
     "autoload-dev": {
         "psr-4": {
             "BenTools\\Specification\\Tests\\": "tests/src"
-        }
+        },
+        "files": [
+            "vendor/symfony/var-dumper/Resources/functions/dump.php"
+        ]
     },
     "autoload": {
         "psr-4": {
             "BenTools\\Specification\\": "src"
         },
         "files": [
-            "src/Helper/Bool.php",
-            "src/Helper/Callback.php",
-            "src/Helper/Create.php",
-            "src/Helper/Not.php"
+            "src/functions.php"
         ]
     },
     "require": {
@@ -25,6 +25,7 @@
     "require-dev": {
         "phpunit/phpunit": "@stable",
         "squizlabs/php_codesniffer": "@stable",
-        "satooshi/php-coveralls": "@stable"
+        "satooshi/php-coveralls": "@stable",
+        "symfony/var-dumper": "^3.3"
     }
 }

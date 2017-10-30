@@ -2,9 +2,10 @@
 
 namespace BenTools\Specification\Helper;
 
+use function BenTools\Specification\reject;
 use BenTools\Specification\Specification;
 
-class CallbackSpecification extends Specification
+final class CallbackSpecification extends Specification
 {
     /**
      * @var callable
@@ -14,23 +15,27 @@ class CallbackSpecification extends Specification
     /**
      * CallbackSpecification constructor.
      *
-     * @param callable $callback
+     * @param callable    $callback
+     * @param null|string $name
      */
-    public function __construct(callable $callback)
+    protected function __construct(callable $callback, ?string $name)
     {
         $this->callback = $callback;
+        $this->name = $name;
     }
 
     /**
      * @inheritdoc
      */
-    public function __invoke(): bool
+    public function __invoke(): void
     {
         $callback = $this->callback;
         $result = $callback();
         if (!is_bool($result)) {
             throw new \RuntimeException("The result of a callback should be of boolean type.");
         }
-        return $result;
+        if (false === $result) {
+            reject($this);
+        }
     }
 }

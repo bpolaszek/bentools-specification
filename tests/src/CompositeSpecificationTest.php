@@ -39,10 +39,10 @@ class CompositeSpecificationTest extends TestCase
     {
         $spec = new BooleanSpecification(true);
 
-        $spec = $spec->andSuits(new BooleanSpecification(true));
+        $spec = $spec->and(new BooleanSpecification(true));
         $this->assertTrue($spec());
 
-        $spec = $spec->andSuits(new BooleanSpecification(false));
+        $spec = $spec->and(new BooleanSpecification(false));
         $this->assertFalse($spec());
 
         $spec = $spec->andSuits(new BooleanSpecification(true));
@@ -53,10 +53,10 @@ class CompositeSpecificationTest extends TestCase
     {
         $spec = new BooleanSpecification(true);
 
-        $spec = $spec->orSuits(new BooleanSpecification(false));
+        $spec = $spec->or(new BooleanSpecification(false));
         $this->assertTrue($spec());
 
-        $spec = $spec->orSuits(new BooleanSpecification(false));
+        $spec = $spec->or(new BooleanSpecification(false));
         $this->assertTrue($spec());
 
         $spec = $spec->orSuits(new BooleanSpecification(true));

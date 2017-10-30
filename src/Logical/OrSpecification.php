@@ -2,78 +2,67 @@
 
 namespace BenTools\Specification\Logical;
 
+use BenTools\Specification\Exception\UnmetSpecificationException;
 use BenTools\Specification\Specification;
-use BenTools\Specification\SpecificationInterface;
 
-class OrSpecification extends Specification
+final class OrSpecification extends Specification
 {
-
-    const LEFT_SPEC = 'left';
-    const RIGHT_SPEC = 'right';
-
     /**
-     * @var SpecificationInterface
+     * @var Specification
      */
     private $leftSpecification;
 
     /**
-     * @var SpecificationInterface
+     * @var Specification
      */
     private $rightSpecification;
 
-    /**
-     * @var string
-     */
-    private $unmetSpecification;
 
     /**
-     * AndSpecification constructor.
+     * OrSpecification constructor.
      *
-     * @param SpecificationInterface $leftSpecification
-     * @param SpecificationInterface $rightSpecification
+     * @param Specification $leftSpecification
+     * @param Specification $rightSpecification
+     * @param null|string   $name
      */
-    public function __construct(SpecificationInterface $leftSpecification, SpecificationInterface $rightSpecification)
+    protected function __construct(
+        Specification $leftSpecification,
+        Specification $rightSpecification,
+        ?string $name
+    )
     {
-        $this->leftSpecification  = $leftSpecification;
+        $this->leftSpecification = $leftSpecification;
         $this->rightSpecification = $rightSpecification;
+        $this->name = $name;
     }
 
     /**
      * @inheritDoc
      */
-    public function callErrorCallback($cascade = false)
+    public function __invoke(): void
     {
-        parent::callErrorCallback();
-
-        if (true === $cascade) {
-            if (self::LEFT_SPEC === $this->unmetSpecification) {
-                $this->leftSpecification->callErrorCallback($cascade);
-            } elseif (self::RIGHT_SPEC === $this->unmetSpecification) {
-                $this->rightSpecification->callErrorCallback($cascade);
-            }
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __invoke(): bool
-    {
+        $rejection = new UnmetSpecificationException();
         $leftSpecification = $this->leftSpecification;
         $rightSpecification = $this->rightSpecification;
-        if (true !== $leftSpecification()) {
-            $this->unmetSpecification = self::LEFT_SPEC;
-        } else {
-            return true;
+        try {
+            $leftSpecification();
+            return; // No need to check for $rightSpecification if $leftSpecification is fulfilled.
+        } catch (UnmetSpecificationException $e) {
+            $rejection = $rejection->withUnmetSpecifications($this)
+                ->withUnmetSpecifications(
+                    ...$e->getUnmetSpecifications()
+                );
         }
-        if (true !== $rightSpecification()) {
-            if (null === $this->unmetSpecification) {
-                $this->unmetSpecification = self::RIGHT_SPEC;
-            }
-        } else {
-            $this->unmetSpecification = null;
-            return true;
+
+        try {
+            $rightSpecification();
+        } catch (UnmetSpecificationException $e) {
+            $rejection = $rejection->withUnmetSpecifications($this)
+                ->withUnmetSpecifications(
+                    ...$e->getUnmetSpecifications()
+                );
         }
-        return false;
+
+        $rejection->throwIfUnmet();
     }
 }

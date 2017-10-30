@@ -3,8 +3,9 @@
 namespace BenTools\Specification\Helper;
 
 use BenTools\Specification\Specification;
+use function BenTools\Specification\reject;
 
-class BooleanSpecification extends Specification
+final class BooleanSpecification extends Specification
 {
     /**
      * @var bool
@@ -14,18 +15,22 @@ class BooleanSpecification extends Specification
     /**
      * BooleanSpecification constructor.
      *
-     * @param bool $bool
+     * @param bool        $bool
+     * @param null|string $name
      */
-    public function __construct(bool $bool)
+    protected function __construct(bool $bool, ?string $name)
     {
         $this->bool = $bool;
+        $this->name = $name;
     }
 
     /**
      * @inheritdoc
      */
-    public function __invoke(): bool
+    public function __invoke(): void
     {
-        return $this->bool;
+        if (false === $this->bool) {
+            reject($this);
+        }
     }
 }
