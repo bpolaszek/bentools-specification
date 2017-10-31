@@ -30,11 +30,11 @@ final class AndSpecification extends Specification
         Specification $leftSpecification,
         Specification $rightSpecification,
         ?string $name
-    )
-    {
+    ) {
+    
         $this->leftSpecification = $leftSpecification;
         $this->rightSpecification = $rightSpecification;
-        $this->name = $name;
+        $this->label = $name;
     }
 
     /**

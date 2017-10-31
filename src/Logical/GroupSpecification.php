@@ -6,7 +6,7 @@ use BenTools\Specification\Exception\UnmetSpecificationException;
 use function BenTools\Specification\reject;
 use BenTools\Specification\Specification;
 
-final class NotSpecification extends Specification
+final class GroupSpecification extends Specification
 {
     /**
      * @var Specification
@@ -14,7 +14,7 @@ final class NotSpecification extends Specification
     private $specification;
 
     /**
-     * NotSpecification constructor.
+     * GroupSpecification constructor.
      *
      * @param Specification $specification
      * @param null|string   $name
@@ -34,11 +34,6 @@ final class NotSpecification extends Specification
     public function __invoke(): void
     {
         $innerSpecification = $this->specification;
-        try {
-            $innerSpecification();
-        } catch (UnmetSpecificationException $e) {
-            return;
-        }
-        reject($this);
+        $innerSpecification();
     }
 }

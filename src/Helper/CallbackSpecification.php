@@ -21,7 +21,7 @@ final class CallbackSpecification extends Specification
     protected function __construct(callable $callback, ?string $name)
     {
         $this->callback = $callback;
-        $this->name = $name;
+        $this->label = $name;
     }
 
     /**
@@ -32,7 +32,7 @@ final class CallbackSpecification extends Specification
         $callback = $this->callback;
         $result = $callback();
         if (!is_bool($result)) {
-            throw new \RuntimeException("The result of a callback should be of boolean type.");
+            throw new \TypeError("The result of a callback should be of boolean type.");
         }
         if (false === $result) {
             reject($this);

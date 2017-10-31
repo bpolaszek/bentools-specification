@@ -1,52 +1,20 @@
 <?php
+namespace BenTools\Specification\Tests;
 
-use BenTools\Specification\Helper\BooleanSpecification;
-use PHPUnit\Framework\TestCase;
+use function BenTools\Specification\not;
 
-use BenTools\Specification\Logical\NotSpecification;
-
-class NotSpecificationTest extends TestCase
+class NotSpecificationTest extends SpecificationTestCase
 {
 
-    public function testTrue()
+    public function testFalseReturnsTrue()
     {
-        $spec = new NotSpecification(new BooleanSpecification(true));
-        $this->assertFalse($spec());
+        $spec = not(false);
+        $this->assertSpecificationFulfilled($spec);
     }
 
-    public function testFalse()
+    public function testTrueReturnsFalse()
     {
-        $spec = new NotSpecification(new BooleanSpecification(false));
-        $this->assertTrue($spec());
+        $spec = not(true);
+        $this->assertSpecificationRejected($spec);
     }
-
-    public function testFunction()
-    {
-        $this->assertTrue(function_exists('BenTools\\Specification\\Helper\\not'));
-        $spec = \BenTools\Specification\Helper\not(new BooleanSpecification(true));
-        $this->assertInstanceOf(NotSpecification::class, $spec);
-    }
-
-    public function testOtherwiseCallback()
-    {
-        $wasCalled = false;
-        $otherwise = function () use (&$wasCalled) {
-            $wasCalled = true;
-        };
-
-        $spec = new NotSpecification(new BooleanSpecification(false));
-        $spec = $spec->otherwise($otherwise);
-        $this->assertTrue($spec());
-        $this->assertFalse($wasCalled);
-
-        $spec = new NotSpecification(new BooleanSpecification(true));
-        $spec = $spec->otherwise($otherwise);
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback();
-        }
-        $this->assertFalse($result);
-        $this->assertTrue($wasCalled);
-
-    }
-
 }

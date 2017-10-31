@@ -29,11 +29,12 @@ final class OrSpecification extends Specification
         Specification $leftSpecification,
         Specification $rightSpecification,
         ?string $name
-    )
-    {
+    ) {
+    
+
         $this->leftSpecification = $leftSpecification;
         $this->rightSpecification = $rightSpecification;
-        $this->name = $name;
+        $this->label = $name;
     }
 
     /**
@@ -44,25 +45,22 @@ final class OrSpecification extends Specification
         $rejection = new UnmetSpecificationException();
         $leftSpecification = $this->leftSpecification;
         $rightSpecification = $this->rightSpecification;
+
         try {
             $leftSpecification();
-            return; // No need to check for $rightSpecification if $leftSpecification is fulfilled.
-        } catch (UnmetSpecificationException $e) {
-            $rejection = $rejection->withUnmetSpecifications($this)
-                ->withUnmetSpecifications(
-                    ...$e->getUnmetSpecifications()
+        } catch (UnmetSpecificationException $leftException) {
+            try {
+                $rightSpecification();
+            } catch (UnmetSpecificationException $rightException) {
+                $rejection = $rejection->withUnmetSpecifications(
+                    ...array_merge(
+                        [$this],
+                        $leftException->getUnmetSpecifications(),
+                        $rightException->getUnmetSpecifications()
+                    )
                 );
+                $rejection->throwIfUnmet();
+            }
         }
-
-        try {
-            $rightSpecification();
-        } catch (UnmetSpecificationException $e) {
-            $rejection = $rejection->withUnmetSpecifications($this)
-                ->withUnmetSpecifications(
-                    ...$e->getUnmetSpecifications()
-                );
-        }
-
-        $rejection->throwIfUnmet();
     }
 }

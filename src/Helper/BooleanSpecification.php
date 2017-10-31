@@ -21,7 +21,7 @@ final class BooleanSpecification extends Specification
     protected function __construct(bool $bool, ?string $name)
     {
         $this->bool = $bool;
-        $this->name = $name;
+        $this->label = $name;
     }
 
     /**

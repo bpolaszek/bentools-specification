@@ -2,183 +2,29 @@
 
 namespace BenTools\Specification\Tests;
 
-use BenTools\Specification\Helper\BooleanSpecification;
-use PHPUnit\Framework\TestCase;
+use function BenTools\Specification\spec;
 
-use BenTools\Specification\Logical\OrSpecification;
-
-class OrSpecificationTest extends TestCase
+class OrSpecificationTest extends SpecificationTestCase
 {
 
     public function testAllTrueReturnsTrue()
     {
-        $spec = new OrSpecification(new BooleanSpecification(true), new BooleanSpecification(true));
-        $this->assertTrue($spec());
+        $spec = spec(true)->or(true);
+        $this->assertSpecificationFulfilled($spec);
     }
 
     public function testOneFalseReturnsTrue()
     {
-        $spec = new OrSpecification(new BooleanSpecification(false), new BooleanSpecification(true));
-        $this->assertTrue($spec());
-        $spec = new OrSpecification(new BooleanSpecification(true), new BooleanSpecification(false));
-        $this->assertTrue($spec());
+        $spec = spec(true)->or(false);
+        $this->assertSpecificationFulfilled($spec);
+
+        $spec = spec(false)->or(true);
+        $this->assertSpecificationFulfilled($spec);
     }
 
-    public function testAllFalseReturnFalse()
+    public function testAllFalseReturnsFalse()
     {
-        $spec = new OrSpecification(new BooleanSpecification(false), new BooleanSpecification(false));
-        $this->assertFalse($spec());
+        $spec = spec(false)->or(false);
+        $this->assertSpecificationRejected($spec);
     }
-
-    public function testOtherwiseCallbackWhenTrue()
-    {
-        $callbackStorage = new \ArrayObject([
-            'composite' => false,
-            'left' => false,
-            'right' => false,
-        ]);
-
-        $leftSpec = new BooleanSpecification(true);
-        $leftSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['left'] = true;
-        });
-
-        $rightSpec = new BooleanSpecification(true);
-        $rightSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['right'] = true;
-        });
-
-
-        $spec      = new OrSpecification($leftSpec, $rightSpec);
-        $spec      = $spec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['composite'] = true;
-        });
-
-        if (false === ($result = $spec())) {
-            $spec->callErrorCallback();
-        }
-        $this->assertTrue($result);
-        $this->assertFalse($callbackStorage['composite']);
-        $this->assertFalse($callbackStorage['left']);
-        $this->assertFalse($callbackStorage['right']);
-
-    }
-
-    public function testOtherwiseCallbackWhenAllIsFalse()
-    {
-        $callbackStorage = new \ArrayObject([
-            'composite' => false,
-            'left' => false,
-            'right' => false,
-        ]);
-
-        $leftSpec = new BooleanSpecification(false);
-        $leftSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['left'] = true;
-        });
-
-        $rightSpec = new BooleanSpecification(false);
-        $rightSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['right'] = true;
-        });
-
-
-        $spec      = new OrSpecification($leftSpec, $rightSpec);
-        $spec      = $spec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['composite'] = true;
-        });
-
-        $spec(); // false
-        $spec->callErrorCallback();
-        $this->assertTrue($callbackStorage['composite']);
-        $this->assertFalse($callbackStorage['left']);
-        $this->assertFalse($callbackStorage['right']);
-
-        // Test cascading
-        $spec(); // false
-        $spec->callErrorCallback(true);
-        $this->assertTrue($callbackStorage['composite']);
-        $this->assertTrue($callbackStorage['left']);
-        $this->assertFalse($callbackStorage['right']); // The left condition failed, thus the right one is not resolved.
-    }
-
-
-    public function testOtherwiseCallbackWhenLeftIsTrue()
-    {
-        $callbackStorage = new \ArrayObject([
-            'composite' => false,
-            'left' => false,
-            'right' => false,
-        ]);
-
-        $leftSpec = new BooleanSpecification(true);
-        $leftSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['left'] = true;
-        });
-
-        $rightSpec = new BooleanSpecification(false);
-        $rightSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['right'] = true;
-        });
-
-
-        $spec      = new OrSpecification($leftSpec, $rightSpec);
-        $spec      = $spec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['composite'] = true;
-        });
-
-        $spec(); // true
-        $this->assertFalse($callbackStorage['composite']);
-        $this->assertFalse($callbackStorage['left']);
-        $this->assertFalse($callbackStorage['right']);
-
-        // Test cascading
-        $spec(); // true
-        $spec->callErrorCallback(true);
-        $this->assertTrue($callbackStorage['composite']);
-        $this->assertFalse($callbackStorage['left']);
-        $this->assertFalse($callbackStorage['right']);
-    }
-
-
-    public function testOtherwiseCallbackWhenRightIsTrue()
-    {
-        $callbackStorage = new \ArrayObject([
-            'composite' => false,
-            'left' => false,
-            'right' => false,
-        ]);
-
-        $leftSpec = new BooleanSpecification(false);
-        $leftSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['left'] = true;
-        });
-
-        $rightSpec = new BooleanSpecification(true);
-        $rightSpec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['right'] = true;
-        });
-
-
-        $spec      = new OrSpecification($leftSpec, $rightSpec);
-        $spec      = $spec->otherwise(function () use ($callbackStorage) {
-            $callbackStorage['composite'] = true;
-        });
-
-        $spec(); // true
-        $spec->callErrorCallback();
-        $this->assertTrue($callbackStorage['composite']);
-        $this->assertFalse($callbackStorage['left']);
-        $this->assertFalse($callbackStorage['right']);
-
-        // Test cascading
-        $spec(); // true
-        $spec->callErrorCallback(true);
-        $this->assertTrue($callbackStorage['composite']);
-        $this->assertFalse($callbackStorage['left']);
-        $this->assertFalse($callbackStorage['right']);
-    }
-
-
-
 }

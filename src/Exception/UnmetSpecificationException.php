@@ -71,5 +71,4 @@ class UnmetSpecificationException extends \RuntimeException implements \Countabl
     {
         return count($this->specifications);
     }
-
 }
