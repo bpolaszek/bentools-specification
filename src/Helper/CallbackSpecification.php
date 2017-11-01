@@ -27,7 +27,7 @@ final class CallbackSpecification extends Specification
     /**
      * @inheritdoc
      */
-    public function __invoke(): void
+    public function validate(): void
     {
         $callback = $this->callback;
         $result = $callback();

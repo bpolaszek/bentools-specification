@@ -27,7 +27,7 @@ final class BooleanSpecification extends Specification
     /**
      * @inheritdoc
      */
-    public function __invoke(): void
+    public function validate(): void
     {
         if (false === $this->bool) {
             reject($this);

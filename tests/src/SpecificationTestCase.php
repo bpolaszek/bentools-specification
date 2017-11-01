@@ -16,12 +16,13 @@ class SpecificationTestCase extends TestCase
     {
         $unmetSpecifications = [];
         try {
-            $specification();
+            $specification->validate();
         } catch (UnmetSpecificationException $exception) {
             $unmetSpecifications = $exception->getUnmetSpecifications();
         }
         $this->assertCount(0, $unmetSpecifications);
     }
+
     /**
      * @param Specification $specification
      * @param string        $message
@@ -30,7 +31,7 @@ class SpecificationTestCase extends TestCase
     {
         $unmetSpecifications = [];
         try {
-            $specification();
+            $specification->validate();
         } catch (UnmetSpecificationException $exception) {
             $unmetSpecifications = $exception->getUnmetSpecifications();
         }

@@ -31,6 +31,6 @@ class CallbackSpecificationTest extends SpecificationTestCase
         $spec = spec(function () {
             return 'foo';
         });
-        $spec();
+        $spec->validate();
     }
 }

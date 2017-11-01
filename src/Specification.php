@@ -79,17 +79,7 @@ abstract class Specification
     /**
      * @throws UnmetSpecificationException
      */
-    abstract public function __invoke(): void;
-
-    /**
-     * Alias - for something more semantic
-     *
-     * @throws UnmetSpecificationException
-     */
-    final public function validate(): void
-    {
-        $this();
-    }
+    abstract public function validate(): void;
 
     /**
      * @param mixed $spec

@@ -31,9 +31,9 @@ final class GroupSpecification extends Specification
     /**
      * @inheritDoc
      */
-    public function __invoke(): void
+    public function validate(): void
     {
         $innerSpecification = $this->specification;
-        $innerSpecification();
+        $innerSpecification->validate();
     }
 }

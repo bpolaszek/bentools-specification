@@ -31,11 +31,11 @@ final class NotSpecification extends Specification
     /**
      * @inheritDoc
      */
-    public function __invoke(): void
+    public function validate(): void
     {
         $innerSpecification = $this->specification;
         try {
-            $innerSpecification();
+            $innerSpecification->validate();
         } catch (UnmetSpecificationException $e) {
             return;
         }

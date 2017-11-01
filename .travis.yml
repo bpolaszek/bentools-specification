@@ -10,7 +10,7 @@ before_script:
   - travis_retry phpenv rehash
 
 script:
-  - ./vendor/bin/phpcs --standard=psr2 src/
+  - ./vendor/bin/phpcs -n --standard=psr2 src/
   - mkdir -p build/logs
   - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 

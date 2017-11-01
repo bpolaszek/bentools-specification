@@ -40,17 +40,17 @@ final class OrSpecification extends Specification
     /**
      * @inheritDoc
      */
-    public function __invoke(): void
+    public function validate(): void
     {
         $rejection = new UnmetSpecificationException();
         $leftSpecification = $this->leftSpecification;
         $rightSpecification = $this->rightSpecification;
 
         try {
-            $leftSpecification();
+            $leftSpecification->validate();
         } catch (UnmetSpecificationException $leftException) {
             try {
-                $rightSpecification();
+                $rightSpecification->validate();
             } catch (UnmetSpecificationException $rightException) {
                 $rejection = $rejection->withUnmetSpecifications(
                     ...array_merge(

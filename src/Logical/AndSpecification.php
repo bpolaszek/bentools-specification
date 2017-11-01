@@ -40,14 +40,14 @@ final class AndSpecification extends Specification
     /**
      * @inheritDoc
      */
-    public function __invoke(): void
+    public function validate(): void
     {
         $rejection = new UnmetSpecificationException();
         $leftSpecification = $this->leftSpecification;
         $rightSpecification = $this->rightSpecification;
 
         try {
-            $leftSpecification();
+            $leftSpecification->validate();
         } catch (UnmetSpecificationException $e) {
             $rejection = $rejection->withUnmetSpecifications($this)
                 ->withUnmetSpecifications(
@@ -56,7 +56,7 @@ final class AndSpecification extends Specification
         }
 
         try {
-            $rightSpecification();
+            $rightSpecification->validate();
         } catch (UnmetSpecificationException $e) {
             $rejection = $rejection->withUnmetSpecifications($this)
                 ->withUnmetSpecifications(
