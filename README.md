@@ -1,13 +1,13 @@
 [![Latest Stable Version](https://poser.pugx.org/bentools/specification/v/stable)](https://packagist.org/packages/bentools/specification)
 [![License](https://poser.pugx.org/bentools/specification/license)](https://packagist.org/packages/bentools/specification)
-[![Build Status](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/badges/build.png?b=master)](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/build-status/master)
+[![Build Status](https://api.travis-ci.org/bpolaszek/bentools-specification.svg?branch=master)](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/build-status/master)
 [![Coverage Status](https://coveralls.io/repos/github/bpolaszek/bentools-specification/badge.svg?branch=master)](https://coveralls.io/github/bpolaszek/bentools-specification?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bpolaszek/bentools-specification/?branch=master)
 [![Total Downloads](https://poser.pugx.org/bentools/specification/downloads)](https://packagist.org/packages/bentools/specification)
 
 # bentools/specification
 
-PHP7.0+ implementation of the Specification Pattern.
+PHP7.1+ implementation of the Specification Pattern.
 
 The goal
 --------
@@ -25,92 +25,135 @@ The principles of the Specification Pattern are borrowed from Domain Driven Desi
 
 Overview
 --------
-Every `Specification` object implements the [`__invoke()`](http://php.net/manual/en/language.oop5.magic.php#object.invoke) method that **MUST** return a boolean, and can be chained with other specifications.
+A specification is a kind of enhanced conditionnal structure, which can be chained to other specifications.
 
-Here's the contract:
-
-```php
-# src/SpecificationInterface.php
-
-namespace BenTools\Specification;
-
-interface SpecificationInterface
-{
-    /**
-     * Add a specification that MUST be fulfilled along with this one.
-     * @param SpecificationInterface $specification
-     * @return SpecificationInterface - Provides fluent interface
-     */
-    public function andSuits(SpecificationInterface $specification): SpecificationInterface;
-
-    /**
-     * Add a specification that MUST be fulfilled if this one's not, and vice-versa.
-     * @param SpecificationInterface $specification
-     * @return SpecificationInterface - Provides fluent interface
-     */
-    public function orSuits(SpecificationInterface $specification): SpecificationInterface;
-
-    /**
-     * Add a negated-specification that MUST be fulfilled along with this one.
-     * @param SpecificationInterface $specification
-     * @return SpecificationInterface - Provides fluent interface
-     */
-    public function andFails(SpecificationInterface $specification): SpecificationInterface;
-
-    /**
-     * Add a negated-specification that MUST be fulfilled if this one's not, and vice-versa.
-     * @param SpecificationInterface $specification
-     * @return SpecificationInterface - Provides fluent interface
-     */
-    public function orFails(SpecificationInterface $specification): SpecificationInterface;
-
-    /**
-     * Specify an optionnal callback that will be called if the condition is not satisfied.
-     * @param callable $callback
-     * @return $this - Provides fluent interface
-     */
-    public function otherwise(callable $callback = null): SpecificationInterface;
-
-    /**
-     * Calls the callback provided by otherwise()
-     */
-    public function callErrorCallback(): void;
-
-    /**
-     * The specification MUST return true or false when invoked.
-     * If the result is false, and a callback has been provided through the otherwise() method,
-     * this callback MUST be called by the implementing function.
-     * @return bool
-     */
-    public function __invoke(): bool;
-}
-```
-
-If the returned boolean is false, you may call `callErrorCallback()`
+Here's how to create a specification:
 
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
-use function BenTools\Specification\Helper\bool as booleanSpec;
-use function BenTools\Specification\Helper\callback as callbackSpec;
+use function BenTools\Specification\spec;
 
-$condition1 = booleanSpec((bool) random_int(0, 1))->otherwise(function () {
-    var_dump('Condition 1 failed.');
-});
+$color = 'green';
+$spec = spec('green' === $color);
+$spec->validate(); // Hurray! Our specification has been validated.
+```
 
-$condition2 = callbackSpec(function () {
-    return (bool) random_int(0, 1);
-})->otherwise(function () {
-    var_dump('Condition 2 failed.');
-});;
+As you can see, the `validate()` method is used to validate a specification is met. It returns `void` (nothing). 
 
-$conditions = $condition1->andSuits($condition2);
+When a specification is unmet, the `validate()` method throws an `UnmetSpecificationException`:
 
-if (false === $conditions()) {
-    $conditions->callErrorCallback(true); // Outputs which one failed
+```php
+use function BenTools\Specification\spec;
+
+$color = 'green';
+$size = 'small';
+$spec = spec('green' === $color)->and('big' === $size);
+$spec->validate(); // Oh no! An UnmetSpecificationException has been thrown.
+```
+
+When handling these exceptions, you can know which specification(s) failed. To identify them, you can name each specification:
+```php
+use BenTools\Specification\Exception\UnmetSpecificationException;
+use function BenTools\Specification\spec;
+
+$color = 'green';
+$size = 'small';
+
+$spec = spec('green' === $color)->withLabel('Color specification')
+            ->and('big' === $size)->withLabel('Size specification');
+try {
+    $spec->validate();
+} catch (UnmetSpecificationException $e) {
+    foreach ($e->getUnmetSpecifications() as $unmetSpecification) {
+        if (null !== $unmetSpecification->getLabel()) {
+            printf('%s failed.' . PHP_EOL, $unmetSpecification->getLabel());
+        }
+    }
 }
-else {
-    // Success!
+
+// Outputs: Size specification failed.
+```
+
+#### Create specifications
+
+The `spec()`, `group()` and `not()` functions, and the `and()` and `or()` methods are Specification factories, that will return a `Specification` object. They accept as an argument:
+
+* A boolean
+* A callable that will resolve to a boolean
+* An existing `Specification object`
+
+Examples:
+
+```php
+use function BenTools\Specification\spec;
+use function BenTools\Specification\group;
+use function BenTools\Specification\not;
+
+spec(true); // Specification met
+not(false); // Specification met
+not(spec(function () {
+    return false;
+})); // Specification met
+group(not(spec(false))->or(true)); // Specification met
+```
+
+#### Group and Chain specifications
+
+A `Specification` object contains `and` and `or` methods that can be used to create composite specifications. You can also use the `group()` function which will behave like parenthesis:
+
+```php
+use function BenTools\Specification\spec;
+use function BenTools\Specification\group;
+use function BenTools\Specification\not;
+
+spec(true)
+    ->and(
+        group(
+            spec(true)->or(false)
+        )
+        ->or(
+            not(false)
+        )
+    ); // Specification met
+```
+
+#### Create your own specifications
+Since the Specification Pattern is intended to test your business rules, you can extend the abstract `Specification` class to create your own objects instead of relying on simple booleans:
+
+```php
+use BenTools\Specification\Exception\UnmetSpecificationException;
+use BenTools\Specification\Specification;
+
+class SpecProductInStock extends Specification
+{
+    /**
+     * @var Product
+     */
+    private $product;
+
+    /**
+     * SpecProductInStock constructor.
+     * @param Product $product
+     */
+    public function __construct(Product $product)
+    {
+        $this->product = $product;
+        $this->label = sprintf('Product %s in stock verification', $product->getName());
+    }
+
+    /**
+     * Validate the specification.
+     * If the specification is unmet the implementation MUST throw an UnmetSpecificationException.
+     *
+     * @throws UnmetSpecificationException
+     */
+    public function validate(): void
+    {
+        if (false === $this->product->isInStock()) {
+            throw new UnmetSpecificationException($this);
+        }
+    }
 }
 ```
 
@@ -123,16 +166,8 @@ See our [example](doc/Example.md) to get started.
 Installation
 ------------
 
-PHP 5.6+ (no return types, scalar type hints disabled)
-
 ```
-composer require bentools/specification ^1.1
-```
-
-PHP 7.0+
-
-```
-composer require bentools/specification ^2.1
+composer require bentools/specification ^3.0
 ```
 
 License
