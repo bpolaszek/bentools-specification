@@ -77,6 +77,9 @@ abstract class Specification
     }
 
     /**
+     * Validate the specification.
+     * If the specification is unmet the implementation MUST throw an UnmetSpecificationException.
+     *
      * @throws UnmetSpecificationException
      */
     abstract public function validate(): void;

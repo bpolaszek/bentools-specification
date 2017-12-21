@@ -6,7 +6,7 @@
 * That latest rule does not apply during holidays
 * During holidays products not in stock can also be added to cart
 
-Let's assume we have a `Cart` object for which we want to add a `Product`, and we have a `Logger` service to record the process when it fails.
+Let's assume we have a `Cart` object for which we want to add a `Product`.
 
 The challenge
 -------------
@@ -33,132 +33,153 @@ Specification
 -------------
 
 ```php
-# Product in stock specification
-
+use BenTools\Specification\Exception\UnmetSpecificationException;
 use BenTools\Specification\Specification;
 
 class SpecProductInStock extends Specification
 {
-
+    /**
+     * @var Product
+     */
     private $product;
 
+    /**
+     * SpecProductInStock constructor.
+     * @param Product $product
+     */
     public function __construct(Product $product)
     {
         $this->product = $product;
+        $this->label = sprintf('Spec "product %s is in stock"', $product->getName());
     }
 
-    public function getProduct()
+    /**
+     * Validate the specification.
+     * If the specification is unmet the implementation MUST throw an UnmetSpecificationException.
+     *
+     * @throws UnmetSpecificationException
+     */
+    public function validate(): void
     {
-        return $this->product;
+        if (false === $this->product->isInStock()) {
+            throw new UnmetSpecificationException($this);
+        }
+    }
+}
+```
+
+```php
+use BenTools\Specification\Exception\UnmetSpecificationException;
+use BenTools\Specification\Specification;
+
+class SpecCartIsNotFull extends Specification
+{
+    /**
+     * @var Cart
+     */
+    private $cart;
+
+    /**
+     * @var int
+     */
+    private $maxProducts;
+
+    /**
+     * SpecCartIsNotLocked constructor.
+     * @param Cart $cart
+     * @param int  $maxProducts
+     */
+    public function __construct(Cart $cart, int $maxProducts)
+    {
+        $this->cart = $cart;
+        $this->maxProducts = $maxProducts;
+        $this->label = sprintf('Spec "cart contains less then %d products"', $maxProducts + 1);
     }
 
     /**
      * @inheritDoc
      */
-    public function __invoke(): bool
+    public function validate(): void
     {
-        return $this->product->isInStock();
+        if (count($this->cart) > $this->maxProducts) {
+            throw new UnmetSpecificationException($this);
+        }
     }
 }
-
-$productIsInStock = SpecProductInStock::create($product)->otherwise(function (SpecProductInStock $spec) use ($logger) {
-    $logger->debug('The product is not in stock.', ['product' => $spec->getProduct()]);
-});
 ```
 
 ```php
-# Cart can accept products specification
-
+use BenTools\Specification\Exception\UnmetSpecificationException;
 use BenTools\Specification\Specification;
 
-class SpecCartAcceptsNewProducts extends Specification
+class SpecTodayIsHoliday extends Specification
 {
+    /**
+     * @var \DateTimeInterface
+     */
+    private $date;
 
-    private $cart;
-    private $max;
-
-    public function __construct(Cart $cart, int $max)
+    /**
+     * SpecTodayIsHoliday constructor.
+     */
+    public function __construct(\DateTimeInterface $date = null)
     {
-        $this->cart = $cart;
-        $this->max  = $max;
+        $this->date = $date ?? new \DateTimeImmutable();
+        $this->label = sprintf('Spec "date %s is in a holiday period"', $this->date->format('Y-m-d'));
     }
 
-    public function getCart()
+    /**
+     * @inheritDoc
+     */
+    public function validate(): void
     {
-        return $this->cart;
+        if (!($this->date >= new \DateTimeImmutable('First day of July')
+            && $this->date < new \DateTimeImmutable('First day of September'))) {
+            throw new UnmetSpecificationException($this);
+        }
     }
-
-    public function __invoke(): bool
-    {
-        return count($this->cart) < $this->max;
-    }
-
 }
-$weCanAddProductsToCart = SpecCartAcceptsNewProducts::create($cart, 3)->otherwise(function (SpecCartAcceptsNewProducts $spec) use ($logger) {
-    $logger->debug(sprintf('The cart already has %d products', count($spec->getCart())), ['cart' => $spec->getCart()]);
-});
-
 ```
 
-```php
-# Holiday checker specification
+### Now, play!
 
+```php
+use BenTools\Specification\Exception\UnmetSpecificationException;
+use function BenTools\Specification\group;
 use BenTools\Specification\Specification;
 
-class SpecHolidayChecker extends Specification
-{
-    private $today;
+$products = [
+    new Product($name = 'Iphone X', $inStock = true),
+    new Product($name = 'Samsung Note', $inStock = true),
+    new Product($name = 'Galaxy Edge', $inStock = false),
+    new Product($name = 'Sony Xperia', $inStock = true),
+];
 
-    public function __construct(DateTimeInterface $today)
-    {
-        $this->today = $today;
+$cart = new Cart();
+$today = new \DateTimeImmutable();
+
+$cartIsNotFull = new SpecCartIsNotFull($cart, 3);
+$todayIsInHoliday = new SpecTodayIsHoliday($today);
+
+$cartCanBeFilled = group($cartIsNotFull->or($todayIsInHoliday));
+foreach ($products as $product) {
+    $productCanBeBought = group($todayIsInHoliday->or(new SpecProductInStock($product)));
+    try {
+        $cartCanBeFilled->and($productCanBeBought)->validate();
+        $cart->add($product);
+    } catch (UnmetSpecificationException $e) {
+        foreach ($e->getUnmetSpecifications() as $unmetSpecification) {
+            if (null !== $unmetSpecification->getLabel()) {
+                printf('%s failed.' . PHP_EOL, $unmetSpecification->getLabel());
+            }
+        }
+        print 'FATAL ERROR'; die; // Do not do this at home
     }
-
-    public function __invoke(): bool
-    {
-        return ($this->today >= new DateTime('First day of July')
-            && $this->today < new DateTime('First day of September'));
-    }
-}
-$weAreInHolidays = SpecHolidayChecker::create(new DateTime())->otherwise(function () use ($logger) {
-    $logger->debug('Sad news, we are not on holidays now.');
-});
-```
-
-```php
-# Run specifications
-
-$productCanBeBought = $productIsInStock->orSuits($weAreInHolidays)->otherwise(function () use ($logger) {
-    $logger->info('Buying this product is impossible.');
-});
-
-$cartCanBeFilled    = $weCanAddProductsToCart->orSuits($weAreInHolidays)->otherwise(function () use ($logger) {
-    $logger->info('Filling the cart is impossible.');
-});
-
-$iCanAddProductToCart = $productCanBeBought->andSuits($cartCanBeFilled)->otherwise(function () use ($logger) {
-    $logger->info('An error occured');
-});
-
-
-if ($iCanAddProductToCart()) {
-    $cart->addProduct($product);
-}
-else {
-    $iCanAddProductToCart->callErrorCallback(true); // Passing true allows cascading the otherwise() chain
-    // The logger should have the following output:
-    // [INFO] An error occured
-    // [INFO] Buying this product is impossible.
-    // [DEBUG] The product is not in stock.
 }
 ```
-
-Of course this leads to way more code (and this example is voluntarily complex), just to wrap some (sometimes) simple conditions. **Do not do this everywhere!** 
-
-The goal is to wrap every business rule into a logical, independent unit, allowing you to test each one and combine them.
 
 
 Credits
 -------
 
-Thank you [Jean-François Lépine (fr)](http://blog.lepine.pro/php/gerer-des-regles-metiers-complexes-etou-changeantes/).
+Thank you [Jean-FranÃ§ois LÃ©pine (fr)](http://blog.lepine.pro/php/gerer-des-regles-metiers-complexes-etou-changeantes/).
