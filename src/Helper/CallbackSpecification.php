@@ -2,8 +2,8 @@
 
 namespace BenTools\Specification\Helper;
 
-use function BenTools\Specification\reject;
 use BenTools\Specification\Specification;
+use function BenTools\Specification\reject;
 
 final class CallbackSpecification extends Specification
 {

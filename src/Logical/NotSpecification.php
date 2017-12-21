@@ -3,8 +3,8 @@
 namespace BenTools\Specification\Logical;
 
 use BenTools\Specification\Exception\UnmetSpecificationException;
-use function BenTools\Specification\reject;
 use BenTools\Specification\Specification;
+use function BenTools\Specification\reject;
 
 final class NotSpecification extends Specification
 {

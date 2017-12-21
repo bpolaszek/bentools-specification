@@ -3,7 +3,6 @@
 namespace BenTools\Specification\Exception;
 
 use BenTools\Specification\Specification;
-use Throwable;
 
 class UnmetSpecificationException extends \RuntimeException implements \Countable
 {

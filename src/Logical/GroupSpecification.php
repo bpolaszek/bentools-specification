@@ -2,8 +2,6 @@
 
 namespace BenTools\Specification\Logical;
 
-use BenTools\Specification\Exception\UnmetSpecificationException;
-use function BenTools\Specification\reject;
 use BenTools\Specification\Specification;
 
 final class GroupSpecification extends Specification

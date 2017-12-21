@@ -82,8 +82,10 @@ abstract class Specification
     abstract public function validate(): void;
 
     /**
-     * @param mixed $spec
+     * @param             $specification
+     * @param null|string $label
      * @return Specification
+     * @throws \RuntimeException
      */
     final public static function factory($specification, ?string $label = null): Specification
     {

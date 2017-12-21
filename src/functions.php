@@ -5,8 +5,10 @@ namespace BenTools\Specification;
 use BenTools\Specification\Exception\UnmetSpecificationException;
 
 /**
- * @param $specification
+ * @param             $specification
+ * @param null|string $name
  * @return Specification
+ * @throws \RuntimeException
  */
 function spec($specification, ?string $name = null): Specification
 {
@@ -14,8 +16,10 @@ function spec($specification, ?string $name = null): Specification
 }
 
 /**
- * @param $specification
+ * @param             $specification
+ * @param null|string $name
  * @return Specification
+ * @throws \RuntimeException
  */
 function not($specification, ?string $name = null): Specification
 {
@@ -23,8 +27,10 @@ function not($specification, ?string $name = null): Specification
 }
 
 /**
- * @param $specification
+ * @param             $specification
+ * @param null|string $name
  * @return Specification
+ * @throws \RuntimeException
  */
 function group($specification, ?string $name = null): Specification
 {
