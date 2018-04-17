@@ -18,4 +18,13 @@ class BooleanSpecificationTest extends SpecificationTestCase
         $spec = spec(false);
         $this->assertSpecificationRejected($spec);
     }
+
+    public function testSpecificationSatisfied()
+    {
+        $spec = spec(true);
+        $this->assertTrue($spec->isSatisfied());
+
+        $spec = spec(false);
+        $this->assertFalse($spec->isSatisfied());
+    }
 }

@@ -75,6 +75,23 @@ try {
 // Outputs: Size specification failed.
 ```
 
+#### Specification quick check
+
+Instead of dealing with try/catch blocks, you can check wether or not a specification is met by calling `$spec->isSatisfied()`, which will handle this for you and return a boolean.
+
+```php
+use BenTools\Specification\Exception\UnmetSpecificationException;
+use function BenTools\Specification\spec;
+
+$color = 'green';
+$size = 'small';
+
+$spec = spec('green' === $color)->withLabel('Color specification')
+            ->and('big' === $size)->withLabel('Size specification');
+            
+var_dump($spec->isSatisfied()); // (bool) false
+```
+
 #### Create specifications
 
 The `spec()`, `group()` and `not()` functions, and the `and()` and `or()` methods are Specification factories, that will return a `Specification` object. They accept as an argument:

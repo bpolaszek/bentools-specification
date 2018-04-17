@@ -85,6 +85,19 @@ abstract class Specification
     abstract public function validate(): void;
 
     /**
+     * @return bool
+     */
+    final public function isSatisfied(): bool
+    {
+        try {
+            $this->validate();
+            return true;
+        } catch (UnmetSpecificationException $e) {
+            return false;
+        }
+    }
+
+    /**
      * @param             $specification
      * @param null|string $label
      * @return Specification
@@ -94,9 +107,11 @@ abstract class Specification
     {
         if ($specification instanceof Specification) {
             return (null !== $label && $label !== $specification->getLabel()) ? $specification->withLabel($label) : $specification;
-        } elseif (is_bool($specification)) {
+        }
+        if (is_bool($specification)) {
             return new BooleanSpecification($specification, $label);
-        } elseif (is_callable($specification)) {
+        }
+        if (is_callable($specification)) {
             return new CallbackSpecification($specification, $label);
         }
         throw new \RuntimeException("Unable to determine specificaton type.");

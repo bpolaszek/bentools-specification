@@ -27,5 +27,10 @@
         "squizlabs/php_codesniffer": "@stable",
         "satooshi/php-coveralls": "@stable",
         "symfony/var-dumper": "^3.3"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
     }
 }
